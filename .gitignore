@@ -1,0 +1,33 @@
+# Node.js modules
+node_modules/
+
+# TypeScript build output
+dist/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Dependency directories
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files (VS Code)
+.vscode/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Coverage reports (if using testing)
+coverage/
+
+# Optional: Ignore any specific local files or folders
+# .idea/ (JetBrains)
+# .expo/
