@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import setupSwagger from "./swaggerConfig";
+import connectDB from "./config/db";
 
 const app = express();
 
@@ -11,6 +12,17 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  } catch (error) {
+    console.error("Error starting server: ", error);
+    process.exit(1);
+  }
+};
+
+startServer();
