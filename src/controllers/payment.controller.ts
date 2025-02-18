@@ -4,10 +4,12 @@ import axios from "axios";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user; // Make sure user is attached from your authentication middleware
-  const { amount, currency, payment_method, description } = req.body;
+  //   const { amount, currency, payment_method, description } = req.body;
+
+  const { amount } = req.body;
 
   // Ensure all required fields are provided
-  if (!amount || !currency || !payment_method || !description) {
+  if (!amount) {
     res.status(400).json({ message: "Missing required fields" });
     return;
   }
@@ -18,9 +20,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       "https://api.paystack.co/transaction/initialize",
       {
         amount, // Amount in kobo (or the smallest currency unit)
-        currency,
-        payment_method,
-        description,
+        currency: "NGN", // Currency code
         email: user.email, // Assuming user has an email
       },
       {
