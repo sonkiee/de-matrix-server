@@ -63,6 +63,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
     );
 
     // Handle Paystack's successful response
+    console.log(response);
     res.status(200).json({ data: response.data });
   } catch (error) {
     console.error("Paystack Verification Error:", error);
