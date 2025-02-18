@@ -73,6 +73,13 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
       if (!order) {
         throw new Error("Order not found");
       }
+      order.paymentStatus = "paid";
+      order.status = "Processing";
+      await order.save();
+
+      res.status(200).json({ message: "Payment successful" });
+    } else {
+      res.status(400).json({ message: "Payment failed" });
     }
 
     // Handle Paystack's successful response
