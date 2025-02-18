@@ -14,7 +14,7 @@ setupSwagger(app);
 
 app.use("/api/users", user);
 app.use("/api/products", product);
-app.use("/api/orders", payment);
+app.use("/api/payment", payment);
 
 const startServer = async () => {
   try {

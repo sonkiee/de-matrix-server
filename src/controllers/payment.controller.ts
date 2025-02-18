@@ -41,3 +41,35 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     return;
   }
 };
+
+export const verifyPayment = async (req: AuthRequest, res: Response) => {
+  const { reference } = req.body;
+
+  // Ensure all required fields are provided
+  if (!reference) {
+    res.status(400).json({ message: "Missing required fields" });
+    return;
+  }
+
+  try {
+    // Make the API request to Paystack
+    const response = await axios.get(
+      `https://api.paystack.co/transaction/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Handle Paystack's successful response
+    res.status(200).json({ data: response.data });
+  } catch (error) {
+    console.error("Paystack Verification Error:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while verifying payment" });
+    return;
+  }
+};
