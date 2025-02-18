@@ -3,7 +3,7 @@ import orderModel from "../models/order.model";
 import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 
-export const orders = async (req: AuthRequest, res: Response) => {
+export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
     const orders = await orderModel.find();
     if (orders.length === 0) {
@@ -32,7 +32,7 @@ export const orderById = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const getOrders = async (
+export const getUserOrders = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
@@ -48,6 +48,8 @@ export const getOrders = async (
     return;
   }
 };
+
+export const getUserOrderById = async () => {};
 
 export const newOrder = async (
   req: AuthRequest,
