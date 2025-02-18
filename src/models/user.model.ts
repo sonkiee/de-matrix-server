@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import { Schema, model, Document } from "mongoose";
+import bcrypt from "bcryptjs";
 
 interface IUser extends Document {
   name: string;
@@ -8,6 +9,8 @@ interface IUser extends Document {
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+
+  matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -44,3 +47,19 @@ const UserSchema = new Schema<IUser>(
     timestamps: true,
   }
 );
+
+UserSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = model<IUser>("User", UserSchema);
+
+export default User;

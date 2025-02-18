@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import setupSwagger from "./swaggerConfig";
-import connectDB from "./config/db";
+import connectDB from "./config/database";
+import user from "./routes/user.routes";
 
 const app = express();
 
@@ -8,9 +9,7 @@ app.use(express.json());
 
 setupSwagger(app);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+app.use("/api/users", user);
 
 const startServer = async () => {
   try {
