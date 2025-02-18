@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
 import user from "./routes/user.routes";
+import product from "./routes/product.routes";
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 setupSwagger(app);
 
 app.use("/api/users", user);
+app.use("/api/products", product);
 
 const startServer = async () => {
   try {
