@@ -50,7 +50,6 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
     res.status(400).json({ message: "Missing required fields" });
     return;
   }
-
   try {
     // Make the API request to Paystack
     const response = await axios.get(
