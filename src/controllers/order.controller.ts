@@ -1,1 +1,65 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import orderModel from "../models/order.model";
+import productModel from "../models/product.model";
+import { AuthRequest } from "../middleware/auth.middleware";
+
+export const newOrder = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const {
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  } = req.body;
+
+  const user = req.user._id;
+  try {
+    if (!orderItems || orderItems.length === 0) {
+      res.status(400).json({ message: "No order items" });
+    }
+
+    const products = await Promise.all(
+      orderItems.map(async (item: any) => {
+        const product = await productModel.findById(item.product);
+        if (!product) {
+          throw new Error(`Product not found: ${item.product}`);
+        }
+
+        const price = product.price;
+        return {
+          product: product._id,
+          name: product.name,
+          price,
+          image: product.image,
+          countInStock: product.countInStock,
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    const totalAmount = itemsPrice + taxPrice + shippingPrice;
+
+    const order = await orderModel.create({
+      user,
+      orderItems: products,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+      totalAmount,
+    });
+
+    const createdOrder = await order.save();
+    res.status(201).json({ createdOrder });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+    return;
+  }
+};
