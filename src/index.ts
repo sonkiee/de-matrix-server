@@ -4,6 +4,8 @@ import connectDB from "./config/database";
 import user from "./routes/user.routes";
 import product from "./routes/product.routes";
 
+import payment from "./routes/payment.routes";
+
 const app = express();
 
 app.use(express.json());
@@ -12,6 +14,7 @@ setupSwagger(app);
 
 app.use("/api/users", user);
 app.use("/api/products", product);
+app.use("/api/orders/init_payment", payment);
 
 const startServer = async () => {
   try {
