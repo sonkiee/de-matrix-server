@@ -32,23 +32,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     );
 
     // Handle Paystack's successful response
-    if (response.data.status === "success") {
-      const { authorization_url, access_code, reference } = response.data.data;
-
-      // Send back the URL to redirect the user to for payment
-      res.status(200).json({
-        message: "Payment initialized successfully",
-        authorization_url,
-        access_code,
-        reference,
-      });
-      return;
-    } else {
-      res.status(400).json({
-        message: "Failed to initialize payment",
-        error: response.data.message,
-      });
-    }
+    res.status(200).json({ data: response.data });
   } catch (error) {
     console.error("Paystack Initialization Error:", error);
     res
