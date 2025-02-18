@@ -8,7 +8,8 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
 
   // Ensure all required fields are provided
   if (!amount || !currency || !payment_method || !description) {
-    return res.status(400).json({ message: "Missing required fields" });
+    res.status(400).json({ message: "Missing required fields" });
+    return;
   }
 
   try {
@@ -41,6 +42,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
         access_code,
         reference,
       });
+      return;
     } else {
       res.status(400).json({
         message: "Failed to initialize payment",
@@ -52,5 +54,6 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     res
       .status(500)
       .json({ message: "An error occurred while initializing payment" });
+    return;
   }
 };
