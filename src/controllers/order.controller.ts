@@ -49,7 +49,20 @@ export const getUserOrders = async (
   }
 };
 
-export const getUserOrderById = async () => {};
+export const getUserOrderById = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  try {
+    const order = await orderModel.findById(id);
+    if (!order) {
+      res.status(404).json({ message: "Order not found" });
+      return;
+    }
+    res.status(200).json({ order });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+    return;
+  }
+};
 
 export const newOrder = async (
   req: AuthRequest,
