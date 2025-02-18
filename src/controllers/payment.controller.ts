@@ -1,6 +1,7 @@
 import express, { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import axios from "axios";
+import orderModel from "../models/order.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user; // Make sure user is attached from your authentication middleware
@@ -61,6 +62,18 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
         },
       }
     );
+
+    if (response.data.data.status === "success") {
+      const { reference } = response.data.data;
+
+      const order = await orderModel.findOne({
+        reference: reference,
+      });
+
+      if (!order) {
+        throw new Error("Order not found");
+      }
+    }
 
     // Handle Paystack's successful response
     console.log(response);
