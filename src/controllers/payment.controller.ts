@@ -21,7 +21,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       {
         amount, // Amount in kobo (or the smallest currency unit)
         currency: "NGN", // Currency code
-        email: user.email, // Assuming user has an email
+        email: "annagu.kennedy@gmail.com", // Assuming user has an email
       },
       {
         headers: {
