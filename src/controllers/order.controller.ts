@@ -3,6 +3,23 @@ import orderModel from "../models/order.model";
 import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 
+export const getOrders = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const orders = await orderModel.find({ user: req.user._id });
+    if (!orders) {
+      res.status(404).json({ message: "No orders found" });
+      return;
+    }
+    res.status(200).json({ orders });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+    return;
+  }
+};
+
 export const newOrder = async (
   req: AuthRequest,
   res: Response
