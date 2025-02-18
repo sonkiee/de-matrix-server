@@ -3,6 +3,35 @@ import orderModel from "../models/order.model";
 import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 
+export const orders = async (req: AuthRequest, res: Response) => {
+  try {
+    const orders = await orderModel.find();
+    if (orders.length === 0) {
+      res.status(404).json({ message: "No orders found" });
+      return;
+    }
+    res.status(200).json({ orders });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+    return;
+  }
+};
+
+export const orderById = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  try {
+    const order = await orderModel.findById(id);
+    if (!order) {
+      res.status(404).json({ message: "Order not found" });
+      return;
+    }
+    res.status(200).json({ order });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+    return;
+  }
+};
+
 export const getOrders = async (
   req: AuthRequest,
   res: Response
