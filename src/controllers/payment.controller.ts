@@ -43,7 +43,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
 };
 
 export const verifyPayment = async (req: AuthRequest, res: Response) => {
-  const { reference } = req.body;
+  const { reference, trxref } = req.query;
 
   // Ensure all required fields are provided
   if (!reference) {
