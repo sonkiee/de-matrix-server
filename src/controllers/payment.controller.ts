@@ -4,9 +4,7 @@ import axios from "axios";
 import orderModel from "../models/order.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
-  const user = req.user; // Make sure user is attached from your authentication middleware
-  //   const { amount, currency, payment_method, description } = req.body;
-
+  const user = req.user;
   const { amount } = req.body;
 
   // Ensure all required fields are provided
