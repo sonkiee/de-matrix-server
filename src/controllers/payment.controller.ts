@@ -2,6 +2,7 @@ import express, { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import axios from "axios";
 import orderModel from "../models/order.model";
+import paymentModel from "../models/payment.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
@@ -34,6 +35,14 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
         },
       }
     );
+
+    await paymentModel.create({
+      user: user._id,
+      order: order._id,
+      reference: response.data.data.reference,
+      amount: order.totalPrice,
+      status: "pending",
+    });
 
     order.reference = response.data.data.reference;
     await order.save();
