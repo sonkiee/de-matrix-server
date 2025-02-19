@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import orderModel from "../models/order.model";
 import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { v4 as uuidv4 } from "uuid";
 
 export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
@@ -68,53 +69,47 @@ export const newOrder = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
-  const {
-    orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  } = req.body;
+  const { products, shippingAddress } = req.body;
 
   const user = req.user._id;
   try {
-    if (!orderItems || orderItems.length === 0) {
-      res.status(400).json({ message: "No order items" });
+    if (!products || !shippingAddress) {
+      res.status(400).json({ message: "Missing required fields" });
+      return;
     }
 
-    const products = await Promise.all(
-      orderItems.map(async (item: any) => {
-        const product = await productModel.findById(item.product);
-        if (!product) {
-          throw new Error(`Product not found: ${item.product}`);
-        }
+    let totalAmount = 0;
+    const orderProducts = [];
 
-        const price = product.price;
-        return {
-          product: product._id,
-          name: product.name,
-          price,
-          image: product.image,
-          countInStock: product.countInStock,
-          quantity: item.quantity,
-        };
-      })
-    );
+    for (const item of products) {
+      const product = await productModel.findById(item.productId);
 
-    const totalAmount = itemsPrice + taxPrice + shippingPrice;
+      if (!product) {
+        res.status(404).json({ message: "Product not found" });
+        return;
+      }
+
+      if (product.stock < item.quantity) {
+        res.status(400).json({ message: "Product out of stock" });
+        return;
+      }
+      totalAmount += product.price * item.quantity;
+      orderProducts.push({
+        product: product._id,
+        quantity: item.quantity,
+        price: product.price,
+      });
+    }
 
     const order = await orderModel.create({
-      user,
+      user: user._id,
+      products: orderProducts,
       orderItems: products,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
       totalAmount,
+      shippingAddress,
+      reference: uuidv4(),
+      status: "pending",
+      paymentStatus: "pending",
     });
 
     const createdOrder = await order.save();
