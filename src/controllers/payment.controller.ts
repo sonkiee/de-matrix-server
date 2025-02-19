@@ -19,9 +19,13 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-        amount, // Amount in kobo (or the smallest currency unit)
+        amount: order.totalPrice * 100,
         currency: "NGN", // Currency code
         email: "annagu.kennedy@gmail.com", // Assuming user has an email
+        reference: order.reference,
+        metadata: {
+          orderId: order._id,
+        },
       },
       {
         headers: {
@@ -31,7 +35,8 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       }
     );
 
-    // Handle Paystack's successful response
+    order.reference = response.data.data.reference;
+    await order.save();
     res.status(200).json({ data: response.data });
   } catch (error) {
     console.error("Paystack Initialization Error:", error);
