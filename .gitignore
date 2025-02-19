@@ -28,6 +28,3 @@ Thumbs.db
 # Coverage reports (if using testing)
 coverage/
 
-# Optional: Ignore any specific local files or folders
-# .idea/ (JetBrains)
-# .expo/
