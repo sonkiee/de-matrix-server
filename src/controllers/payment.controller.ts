@@ -3,6 +3,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import axios from "axios";
 import orderModel from "../models/order.model";
 import paymentModel from "../models/payment.model";
+import productModel from "../models/product.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
@@ -43,6 +44,12 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       amount: order.totalPrice,
       status: "pending",
     });
+
+    for (const item of order.products) {
+      const product = await productModel.findById(item.product);
+      product.stock -= item.quantity;
+      await product.save();
+    }
 
     order.reference = response.data.data.reference;
     await order.save();
