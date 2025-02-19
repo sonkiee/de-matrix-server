@@ -5,11 +5,12 @@ import orderModel from "../models/order.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
-  const { amount } = req.body;
+  const { orderId } = req.body;
 
   // Ensure all required fields are provided
-  if (!amount) {
-    res.status(400).json({ message: "Missing required fields" });
+  const order = await orderModel.findById(orderId);
+  if (!order) {
+    res.status(400).json({ message: "Order not found" });
     return;
   }
 
