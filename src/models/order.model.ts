@@ -31,7 +31,15 @@ const OrderSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    reference: {},
+    reference: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+      sparse: true,
+    },
     shippingAddress: {
       type: String,
       required: true,
