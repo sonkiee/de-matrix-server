@@ -7,7 +7,7 @@ export const upload = multer({
   },
 });
 
-export const storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: "./public/uploads/",
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
