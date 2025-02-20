@@ -5,6 +5,7 @@ import user from "./routes/user.routes";
 import product from "./routes/product.routes";
 import category from "./routes/category.routes";
 import payment from "./routes/payment.routes";
+import order from "./routes/order.routes";
 
 const app = express();
 
@@ -15,6 +16,7 @@ setupSwagger(app);
 app.use("/api/users", user);
 app.use("/api/products", product);
 app.use("/api/payment", payment);
+app.use("/api/orders", order);
 app.use("/api/category", category);
 
 const startServer = async () => {
