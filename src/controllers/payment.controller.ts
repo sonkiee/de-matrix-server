@@ -167,4 +167,12 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
     });
     return;
   }
+
+  try {
+  } catch (error) {
+    console.error("Webhook Handling Error", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 };
