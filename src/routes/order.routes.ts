@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.get("/admin", getOrders);
 router.get("/admin/:id", getOrderById);
-router.get("/user/:id", protect, getUserOrders);
-router.get("/user/:id/:orderId", protect, getUserOrderById);
+router.get("/user/", protect, getUserOrders);
+router.get("/user/:id/", protect, getUserOrderById);
 
 router.post("/new", protect, newOrder);
 
