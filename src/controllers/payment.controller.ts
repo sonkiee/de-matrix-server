@@ -71,7 +71,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     console.error("Paystack Initialization Error:", error);
     res
       .status(500)
-      .json({ message: "An error occurred while initializing payment" });
+      .json({ message: "An error occurred while initializing payment", error });
     return;
   }
 };
