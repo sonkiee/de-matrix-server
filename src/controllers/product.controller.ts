@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 
 import { uploadToR2 } from "../config/r2config";
+import categoryModel from "../models/category.model";
 
 export const createProduct = async (
   req: AuthRequest,
@@ -14,6 +15,14 @@ export const createProduct = async (
   try {
     if (!name || !description || !price || !category || !stock) {
       res.status(400).json({ message: "Please enter all fields" });
+      return;
+    }
+
+    const existingCategory = await categoryModel.findById(category);
+    if (existingCategory) {
+      res
+        .status(400)
+        .json({ message: `${existingCategory} does not exist in store` });
       return;
     }
 
