@@ -17,7 +17,9 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     return;
   }
 
-  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+  const orderIdStr = String(orderId);
+
+  if (!mongoose.Types.ObjectId.isValid(orderIdStr)) {
     res.status(400).json({ message: "Invalid category ID" });
     return;
   }
