@@ -3,6 +3,7 @@ import orderModel from "../models/order.model";
 import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { v4 as uuidv4 } from "uuid";
+import mongoose from "mongoose";
 
 export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
@@ -82,6 +83,12 @@ export const newOrder = async (
     const orderProducts = [];
 
     for (const item of products) {
+      if (!mongoose.Types.ObjectId.isValid(item.productId)) {
+        res
+          .status(400)
+          .json({ message: `Invalid product ID: ${item.productId}` });
+        return;
+      }
       const product = await productModel.findById(item);
 
       if (!product) {
