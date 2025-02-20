@@ -4,6 +4,7 @@ import axios from "axios";
 import orderModel from "../models/order.model";
 import paymentModel from "../models/payment.model";
 import productModel from "../models/product.model";
+import mongoose from "mongoose";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
@@ -13,6 +14,11 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     res.status(400).json({
       message: "Missing OrderId",
     });
+    return;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    res.status(400).json({ message: "Invalid category ID" });
     return;
   }
 
