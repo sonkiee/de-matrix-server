@@ -16,7 +16,12 @@ export const getBanner = async (req: Request, res: Response): Promise<void> => {
         return;
       }
     } else {
-      banners = await bannerModel.find(); // Fetch all banners
+      banners = await bannerModel.find();
+
+      if (banners.length === 0) {
+        res.status(404).json({ message: "No banners uploaded" });
+        return;
+      }
     }
 
     res.status(200).json({ banners });
