@@ -9,21 +9,21 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
   const { orderId } = req.body;
 
-  if (!orderId) {
-    res.status(400).json({
-      message: "Missing OrderId",
-    });
-    return;
-  }
-
-  // Ensure all required fields are provided
-  const order = await orderModel.findById(orderId);
-  if (!order) {
-    res.status(400).json({ message: "Order not found" });
-    return;
-  }
-
   try {
+    if (!orderId) {
+      res.status(400).json({
+        message: "Missing OrderId",
+      });
+      return;
+    }
+
+    // Ensure all required fields are provided
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      res.status(400).json({ message: "Order not found" });
+      return;
+    }
+
     // Make the API request to Paystack
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
