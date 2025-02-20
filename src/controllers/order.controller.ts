@@ -79,8 +79,8 @@ export const newOrder = async (
       return;
     }
 
-    if (!Array.isArray(products) || !shippingAddress) {
-      res.status(400).json({ message: "Invalid request format" });
+    if (!Array.isArray(products)) {
+      res.status(400).json({ message: "please provide an Array of products" });
       return;
     }
 
@@ -88,13 +88,20 @@ export const newOrder = async (
     const orderProducts = [];
 
     for (const item of products) {
+      if (!item.productId) {
+        res.status(400).json({
+          message: "Each product must have productId",
+        });
+        return;
+      }
+
       if (!mongoose.Types.ObjectId.isValid(item.productId)) {
         res
           .status(400)
           .json({ message: `Invalid product ID: ${item.productId}` });
         return;
       }
-      const product = await productModel.findById(item);
+      const product = await productModel.findById(item.productId);
 
       if (!product) {
         res.status(404).json({ message: "Product not found" });
