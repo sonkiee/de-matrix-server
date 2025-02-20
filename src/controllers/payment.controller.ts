@@ -180,6 +180,10 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
       });
       return;
     }
+
+    order.paymentStatus = "paid";
+    order.status = "processing";
+    await order.save();
   } catch (error) {
     console.error("Webhook Handling Error", error);
     res.status(500).json({
