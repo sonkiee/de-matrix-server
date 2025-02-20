@@ -184,6 +184,25 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
     order.paymentStatus = "paid";
     order.status = "processing";
     await order.save();
+
+    const payment = await paymentModel.findOne({ reference });
+
+    if (!payment) {
+      await paymentModel.create({
+        user: order.user,
+        order: order._id,
+        reference,
+        status: "paid",
+        amount: order.totalAmount / 100,
+      });
+    } else {
+      payment.status = "paid";
+      await payment.save();
+    }
+    console.log(`Payment verifeif for order ${order._id}`);
+    res.status(200).json({
+      message: "Payment processed successfully",
+    });
   } catch (error) {
     console.error("Webhook Handling Error", error);
     res.status(500).json({
