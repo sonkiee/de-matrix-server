@@ -82,7 +82,7 @@ export const newOrder = async (
     const orderProducts = [];
 
     for (const item of products) {
-      const product = await productModel.findById(item.productId);
+      const product = await productModel.findById(item);
 
       if (!product) {
         res.status(404).json({ message: "Product not found" });
