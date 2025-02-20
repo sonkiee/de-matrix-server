@@ -5,6 +5,7 @@ import {
   updateProfile,
   getProfile,
 } from "../controllers/user.controller";
+import { protect, admin } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
@@ -13,7 +14,10 @@ router.get("/", (req, res) => {
 });
 router.post("/register", register);
 router.post("/login", login);
-router.get("/profile", getProfile);
-router.put("/profile", updateProfile);
+router.get("/profile", protect, getProfile);
+router.put("/profile", protect, updateProfile);
+router.get("/admin", admin, (req, res) => {
+  res.json({ message: "Admin route" });
+});
 
 export default router;

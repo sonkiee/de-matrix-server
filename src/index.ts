@@ -3,7 +3,7 @@ import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
 import user from "./routes/user.routes";
 import product from "./routes/product.routes";
-
+import category from "./routes/category.routes";
 import payment from "./routes/payment.routes";
 
 const app = express();
@@ -15,6 +15,7 @@ setupSwagger(app);
 app.use("/api/users", user);
 app.use("/api/products", product);
 app.use("/api/payment", payment);
+app.use("/api/category", category);
 
 const startServer = async () => {
   try {

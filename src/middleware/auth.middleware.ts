@@ -27,14 +27,26 @@ export const protect = async (
       req.user = await User.findById(decoded.id).select("-password");
 
       if (!req.user) {
-        return res.status(401).json({ message: "User not found" });
+        res.status(401).json({ message: "User not found" });
+        return;
       }
 
       next();
     } catch (error) {
-      return res.status(401).json({ message: "Not authorized, invalid token" });
+      res.status(401).json({ message: "Not authorized, invalid token" });
+      return;
     }
   } else {
-    return res.status(401).json({ message: "Not authorized, no token" });
+    res.status(401).json({ message: "You must be logged in" });
+    return;
   }
 };
+
+export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(401).json({ message: "Not authorized as an admin" });
+  }
+};
+// Compare this snippet from src/controllers/payment.controller.ts:
