@@ -32,6 +32,11 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       return;
     }
 
+    // if (!order.reference) {
+    //   order.reference = new mongoose.Types.ObjectId().toString();
+    //   await order.save();
+    // }
+
     // Make the API request to Paystack
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
