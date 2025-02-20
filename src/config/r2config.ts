@@ -1,4 +1,8 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  ObjectCannedACL,
+} from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,6 +32,7 @@ export const uploadToR2 = async (file: any) => {
     Key: fileName,
     Body: file.buffer,
     ContentType: file.mimetype,
+    ACL: "private" as ObjectCannedACL, // ✅ Explicitly typed
   };
 
   await s3Client.send(new PutObjectCommand(params));
