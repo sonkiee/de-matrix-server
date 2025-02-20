@@ -1,4 +1,4 @@
-import express, { Response } from "express";
+import express, { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import axios from "axios";
 import orderModel from "../models/order.model";
@@ -156,7 +156,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const paymentWebhook = async (req: AuthRequest, res: Response) => {
+export const paymentWebhook = async (req: Request, res: Response) => {
   const event = req.body;
 
   if (!event) {
