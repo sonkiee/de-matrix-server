@@ -157,3 +157,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
     return;
   }
 };
+
+export const paymentWbhook = async (req: AuthRequest, res: Response) => {
+  const event = req.body;
+};
