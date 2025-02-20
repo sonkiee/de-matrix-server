@@ -79,6 +79,11 @@ export const newOrder = async (
       return;
     }
 
+    if (!Array.isArray(products) || !shippingAddress) {
+      res.status(400).json({ message: "Invalid request format" });
+      return;
+    }
+
     let totalAmount = 0;
     const orderProducts = [];
 
