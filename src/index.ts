@@ -10,9 +10,10 @@ import banner from "./routes/banner.routes";
 
 const app = express();
 
-app.use(express.json());
-
 setupSwagger(app);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", user);
 app.use("/api/products", product);
