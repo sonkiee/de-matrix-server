@@ -8,9 +8,15 @@ export const createProduct = async (
 ): Promise<void> => {
   const { name, description, price, category, stock, images, colors, sizes } =
     req.body;
+  const files = req.files as Express.Multer.File[];
   try {
     if (!name || !description || !price || !category || !stock) {
       res.status(400).json({ message: "Please enter all fields" });
+      return;
+    }
+
+    if (!files || files.length === 0) {
+      res.status(400).json({ message: "Please uplaod atleast one image" });
       return;
     }
 
