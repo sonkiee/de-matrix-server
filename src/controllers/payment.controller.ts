@@ -120,7 +120,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
         throw new Error("Order not found");
       }
       order.paymentStatus = "paid";
-      order.status = "Processing";
+      order.status = "processing";
       await order.save();
 
       res.status(200).json({ message: "Payment successful" });
