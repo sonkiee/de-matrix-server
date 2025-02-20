@@ -104,14 +104,19 @@ export const newOrder = async (
       const product = await productModel.findById(item.productId);
 
       if (!product) {
-        res.status(404).json({ message: "Product not found" });
+        res
+          .status(404)
+          .json({ message: `Product with ID ${item.productId} not found` });
         return;
       }
 
       if (product.stock < item.quantity) {
-        res.status(400).json({ message: "Product out of stock" });
+        res
+          .status(400)
+          .json({ message: `Product ${product.name} is out of stock` });
         return;
       }
+
       totalAmount += product.price * item.quantity;
       orderProducts.push({
         product: product._id,
