@@ -167,7 +167,7 @@ export const paymentWebhook = async (req: AuthRequest, res: Response) => {
   }
 
   try {
-    if (event.ebent === "charge.success") {
+    if (event.event === "charge.success") {
       const { reference, amount } = event.data;
 
       const order = await orderModel.findOne({ reference });
