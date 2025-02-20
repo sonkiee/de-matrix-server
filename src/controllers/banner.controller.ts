@@ -37,13 +37,20 @@ export const uploadBanner = async (
   try {
     const { type, title, description } = req.body;
 
-    if (!req.file) {
-      res.status(400).json({ message: "Please upload a banner image" });
+    if (!type) {
+      res.status(400).json({ message: "Please provide a banner type" });
       return;
     }
 
-    if (!type) {
-      res.status(400).json({ message: "Please provide a banner type" });
+    if (!["small", "big"].includes(type)) {
+      res
+        .status(400)
+        .json({ message: "Invalid banner type. Choose 'small' or 'big'." });
+      return;
+    }
+
+    if (!req.file) {
+      res.status(400).json({ message: "Please upload a banner image" });
       return;
     }
 
