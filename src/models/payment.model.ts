@@ -12,7 +12,7 @@ const PaymentSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
-    paymentID: {
+    reference: {
       type: String,
       required: true,
     },
