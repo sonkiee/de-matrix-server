@@ -13,6 +13,7 @@ export const uploadBanner = async (
 
     if (!req.file) {
       res.status(400).json({ message: "Please upload a banner image" });
+      return;
     }
 
     const existing = await bannerModel.findOne({ type });
@@ -22,7 +23,23 @@ export const uploadBanner = async (
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
+
+      existing.imageUrl = "";
+      existing.title = title || existing.title;
+      existing.description = description || existing.description;
+      await existing.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
     }
+
+    const banner = await bannerModel.create({
+      type,
+      imageUrl: `/uploads/${req.file.filename}`,
+      title,
+      description,
+    });
+
+    res.status(201).json({ message: "Banner uploaded successfully", banner });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
