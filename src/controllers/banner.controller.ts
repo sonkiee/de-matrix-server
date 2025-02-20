@@ -73,6 +73,7 @@ export const uploadBanner = async (
     });
 
     res.status(201).json({ message: "Banner uploaded successfully", banner });
+    return;
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
