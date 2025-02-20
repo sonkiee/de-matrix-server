@@ -45,8 +45,6 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
         currency: "NGN", // Currency code
         email: user.email, // Assuming user has an email
         reference: order.reference,
-        callback_url:
-          "https://5aa9-197-211-58-221.ngrok-free.app/api/payment/verify",
         metadata: {
           orderId: order._id,
         },
