@@ -24,18 +24,19 @@ export const uploadBanner = async (
         "..",
         "public",
         "uploads",
-        existing.image
+        existing.imageUrl
       );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
 
-      existing.imageUrl = "";
+      existing.imageUrl = `/uploads/${req.file.filename}`;
       existing.title = title || existing.title;
       existing.description = description || existing.description;
       await existing.save();
 
       res.status(200).json({ message: "Banner updated successfully" });
+      return;
     }
 
     const banner = await bannerModel.create({
