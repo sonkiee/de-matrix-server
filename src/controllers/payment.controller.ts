@@ -158,7 +158,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const paymentWbhook = async (req: AuthRequest, res: Response) => {
+export const paymentWebhook = async (req: AuthRequest, res: Response) => {
   const event = req.body;
 
   if (!event) {
@@ -169,6 +169,46 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
   }
 
   try {
+    if (event.ebent === "charge.success") {
+      const { reference, amount } = event.data;
+
+      const order = await orderModel.findOne({ reference });
+
+      if (!order) {
+        console.error(`Order not found for reference ${reference}`);
+        res.status(404).json({
+          message: "Order not found",
+        });
+        return;
+      }
+
+      order.paymentStatus = "paid";
+      order.status = "processing";
+      await order.save();
+
+      const payment = await paymentModel.findOne({ reference });
+
+      if (!payment) {
+        await paymentModel.create({
+          user: order.user,
+          order: order._id,
+          reference,
+          status: "paid",
+          amount: order.totalAmount / 100,
+        });
+      } else {
+        payment.status = "paid";
+        await payment.save();
+      }
+      console.log(`Payment verifeif for order ${order._id}`);
+      res.status(200).json({
+        message: "Payment processed successfully",
+      });
+    } else {
+      res.status(400).json({
+        message: "Event not handled",
+      });
+    }
   } catch (error) {
     console.error("Webhook Handling Error", error);
     res.status(500).json({
