@@ -13,3 +13,5 @@ export const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
+
+export const yupload = multer({ storage }).single("image");
