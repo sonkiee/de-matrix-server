@@ -15,7 +15,6 @@ router.get("/admin", getOrders);
 router.get("/admin/:id", getOrderById);
 router.get("/user/", protect, getUserOrders);
 router.get("/user/:id/", protect, getUserOrderById);
-
-router.post("/new", protect, newOrder);
+router.post("/user/new", protect, newOrder);
 
 export default router;
