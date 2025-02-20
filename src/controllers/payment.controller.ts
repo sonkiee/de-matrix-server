@@ -123,7 +123,7 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
       order.status = "processing";
       await order.save();
 
-      res.status(200).json({ message: "Payment successful" });
+      res.status(200).json({ message: "Payment successful", order });
     } else {
       res.status(400).json({ message: "Payment failed" });
     }
