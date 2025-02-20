@@ -169,6 +169,9 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
   }
 
   try {
+    const { reference, amount } = event.data;
+
+    const order = await orderModel.findOne({ reference });
   } catch (error) {
     console.error("Webhook Handling Error", error);
     res.status(500).json({
