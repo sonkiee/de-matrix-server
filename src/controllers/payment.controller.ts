@@ -160,4 +160,11 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
 
 export const paymentWbhook = async (req: AuthRequest, res: Response) => {
   const event = req.body;
+
+  if (!event) {
+    res.status(400).json({
+      message: "Invalid webhook payload",
+    });
+    return;
+  }
 };
