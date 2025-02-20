@@ -117,7 +117,8 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
       });
 
       if (!order) {
-        throw new Error("Order not found");
+        res.status(404).json({ message: "Order not found" });
+        return;
       }
       order.paymentStatus = "paid";
       order.status = "processing";
