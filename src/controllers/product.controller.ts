@@ -10,7 +10,7 @@ export const createProduct = async (
 ): Promise<void> => {
   const { name, description, price, category, stock, images, colors, sizes } =
     req.body;
-  const files = req.files as Express.Multer.File[];
+  const files = req.files as Express.Multer.File[] | undefined;
   try {
     if (!name || !description || !price || !category || !stock) {
       res.status(400).json({ message: "Please enter all fields" });
@@ -22,13 +22,15 @@ export const createProduct = async (
       return;
     }
 
+    const imageUrls = await Promise.all(files.map((file) => uploadToR2(file)));
+
     const product = await productModel.create({
       name,
       description,
       price,
       category,
       stock,
-      images,
+      images: imageUrls,
       colors,
       sizes,
     });
