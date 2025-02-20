@@ -30,6 +30,14 @@ export const createProduct = async (
       return;
     }
 
+    const existingProduct = await productModel.findOne({ name });
+    if (existingProduct) {
+      res
+        .status(400)
+        .json({ message: "A product with this name already exists." });
+      return;
+    }
+
     if (!files || files.length === 0) {
       res.status(400).json({ message: "Please uplaod atleast one image" });
       return;
