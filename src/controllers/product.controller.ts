@@ -37,7 +37,7 @@ export const createProduct = async (
       name,
       description,
       price,
-      category,
+      category: existingCategory,
       stock,
       images: imageUrls,
       colors,
