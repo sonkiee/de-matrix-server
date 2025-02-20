@@ -124,6 +124,23 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
       order.status = "processing";
       await order.save();
 
+      const payment = await paymentModel.findOne({ reference });
+
+      if (!payment) {
+        // If no existing payment record, create one
+        await paymentModel.create({
+          user: order.user,
+          order: order._id,
+          reference,
+          status: "paid",
+          amount: order.totalAmount / 100, // Convert kobo to Naira if needed
+        });
+      } else {
+        // Update existing payment record
+        payment.status = "paid";
+        await payment.save();
+      }
+
       res.status(200).json({ message: "Payment successful", order });
     } else {
       res.status(400).json({ message: "Payment failed" });
