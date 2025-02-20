@@ -2,6 +2,8 @@ import productModel from "../models/product.model";
 import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 
+import { uploadToR2 } from "../config/r2config";
+
 export const createProduct = async (
   req: AuthRequest,
   res: Response
