@@ -4,6 +4,14 @@ import path from "path";
 import { yupload } from "../middleware/upload.middleware";
 import bannerModel from "../models/banner.model";
 
+export const getBanners = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const banners = await bannerModel.find();
+  res.json(banners);
+};
+
 export const uploadBanner = async (
   req: Request,
   res: Response
