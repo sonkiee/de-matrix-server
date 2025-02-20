@@ -9,14 +9,14 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
   const { orderId } = req.body;
 
-  try {
-    if (!orderId) {
-      res.status(400).json({
-        message: "Missing OrderId",
-      });
-      return;
-    }
+  if (!orderId) {
+    res.status(400).json({
+      message: "Missing OrderId",
+    });
+    return;
+  }
 
+  try {
     // Ensure all required fields are provided
     const order = await orderModel.findById(orderId);
     if (!order) {
