@@ -4,12 +4,25 @@ import path from "path";
 import { yupload } from "../middleware/upload.middleware";
 import bannerModel from "../models/banner.model";
 
-export const getBanners = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const banners = await bannerModel.find();
-  res.json(banners);
+export const getBanner = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { type } = req.query;
+
+    let banners;
+    if (type) {
+      banners = await bannerModel.findOne({ type });
+      if (!banners) {
+        res.status(404).json({ message: `No ${type} banner found` });
+        return;
+      }
+    } else {
+      banners = await bannerModel.find(); // Fetch all banners
+    }
+
+    res.status(200).json({ banners });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
 };
 
 export const uploadBanner = async (
