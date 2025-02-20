@@ -25,10 +25,8 @@ export const createProduct = async (
     }
 
     const existingCategory = await categoryModel.findById(category);
-    if (existingCategory) {
-      res
-        .status(400)
-        .json({ message: `${existingCategory} does not exist in store` });
+    if (!existingCategory) {
+      res.status(400).json({ message: "Category does not exist in store" });
       return;
     }
 
