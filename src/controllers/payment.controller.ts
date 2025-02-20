@@ -172,6 +172,14 @@ export const paymentWbhook = async (req: AuthRequest, res: Response) => {
     const { reference, amount } = event.data;
 
     const order = await orderModel.findOne({ reference });
+
+    if (!order) {
+      console.error(`Order not found for reference ${reference}`);
+      res.status(404).json({
+        message: "Order not found",
+      });
+      return;
+    }
   } catch (error) {
     console.error("Webhook Handling Error", error);
     res.status(500).json({
