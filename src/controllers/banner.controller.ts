@@ -19,7 +19,13 @@ export const uploadBanner = async (
     const existing = await bannerModel.findOne({ type });
 
     if (existing) {
-      const filePath = path.join(__dirname, "..", "uploads", existing.image);
+      const filePath = path.join(
+        __dirname,
+        "..",
+        "public",
+        "uploads",
+        existing.image
+      );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
