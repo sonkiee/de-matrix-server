@@ -36,5 +36,6 @@ export const uploadToR2 = async (file: any) => {
   };
 
   await s3Client.send(new PutObjectCommand(params));
-  return `${process.env.R2_PUBLIC_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${fileName}`;
+  return `${process.env.R2_PUBLIC_ENDPOINT}/${fileName}`;
+  // return `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${fileName}`;
 };
