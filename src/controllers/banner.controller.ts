@@ -19,6 +19,9 @@ export const uploadBanner = async (
 
     if (existing) {
       const filePath = path.join(__dirname, "..", "uploads", existing.image);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
