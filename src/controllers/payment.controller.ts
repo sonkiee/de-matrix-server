@@ -62,6 +62,10 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
 
     for (const item of order.products) {
       const product = await productModel.findById(item.product);
+      if (!product) {
+        res.status(400).json({ message: `Product ${item.product} not found` });
+        return;
+      }
       product.stock -= item.quantity;
       await product.save();
     }
