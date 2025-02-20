@@ -3,10 +3,11 @@ import {
   initializePayment,
   verifyPayment,
 } from "../controllers/payment.controller";
+import { protect } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/init", initializePayment);
+router.post("/init", protect, initializePayment);
 router.get("/verify", verifyPayment);
 
 export default router;
