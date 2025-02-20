@@ -36,7 +36,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-        amount: order.totalPrice * 100,
+        amount: order.totalAmount * 100,
         currency: "NGN", // Currency code
         email: user.email, // Assuming user has an email
         reference: order.reference,
