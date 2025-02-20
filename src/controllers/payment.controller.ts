@@ -56,7 +56,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       user: user._id,
       order: order._id,
       reference: response.data.data.reference,
-      amount: order.totalPrice,
+      amount: order.totalAmount,
       status: "pending",
     });
 
