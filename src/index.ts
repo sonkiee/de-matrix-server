@@ -6,6 +6,7 @@ import product from "./routes/product.routes";
 import category from "./routes/category.routes";
 import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
+import banner from "./routes/banner.routes";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/products", product);
 app.use("/api/payment", payment);
 app.use("/api/orders", order);
 app.use("/api/category", category);
+app.use("/api/banners", banner);
 
 const startServer = async () => {
   try {
