@@ -7,6 +7,7 @@ const BannerSchema = new mongoose.Schema(
       enum: ["small", "big"],
       required: true,
       unique: true,
+      default: "small",
     },
     imageUrl: {
       type: String,

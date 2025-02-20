@@ -42,6 +42,11 @@ export const uploadBanner = async (
       return;
     }
 
+    if (!type) {
+      res.status(400).json({ message: "Please provide a banner type" });
+      return;
+    }
+
     const existing = await bannerModel.findOne({ type });
 
     if (existing) {
