@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express from "express";
 import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
 import user from "./routes/user.routes";
