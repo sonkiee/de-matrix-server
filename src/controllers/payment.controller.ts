@@ -23,7 +23,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
       {
         amount: order.totalPrice * 100,
         currency: "NGN", // Currency code
-        email: "annagu.kennedy@gmail.com", // Assuming user has an email
+        email: user.email, // Assuming user has an email
         reference: order.reference,
         metadata: {
           orderId: order._id,
