@@ -31,6 +31,7 @@ const OrderSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    reference: {},
     shippingAddress: {
       type: String,
       required: true,
