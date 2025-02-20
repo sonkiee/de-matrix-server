@@ -4,6 +4,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 
 import { uploadToR2 } from "../config/r2config";
 import categoryModel from "../models/category.model";
+import mongoose from "mongoose";
 
 export const createProduct = async (
   req: AuthRequest,
@@ -15,6 +16,11 @@ export const createProduct = async (
   try {
     if (!name || !description || !price || !category || !stock) {
       res.status(400).json({ message: "Please enter all fields" });
+      return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(category)) {
+      res.status(400).json({ message: "Invalid category ID" });
       return;
     }
 
