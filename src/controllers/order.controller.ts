@@ -121,9 +121,8 @@ export const newOrder = async (
     }
 
     const order = await orderModel.create({
-      user: user._id,
+      user,
       products: orderProducts,
-      orderItems: products,
       totalAmount,
       shippingAddress,
       reference: uuidv4(),
