@@ -14,6 +14,7 @@ import category from "./routes/category.routes";
 import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
 import banner from "./routes/banner.routes";
+import index from "./routes/index.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import logger from "./config/logger";
@@ -43,6 +44,8 @@ app.use(errorHandler);
 
 app.use("/uploads", express.static("public/uploads"));
 
+app.use("/", index);
+app.use("/api", index);
 app.use("/api/users", user);
 app.use("/api/products", product);
 app.use("/api/payment", payment);
