@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", (req, res) => {
   res.send(`
     <h1>Welcome to FTL E-commerce API</h1>
-    <p>Use <a href="/api/v1">/api/v1</a> to interact with the API endpoints.</p>
+    <p>Use <bold>/api/v1</bold> to interact with the API endpoints.</p>
     <p>For API documentation, visit <a href="/doc">/doc</a> or <a href="/api">/api</a>.</p>
   `);
 });
