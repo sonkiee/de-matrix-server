@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import hpp from "hpp";
+import compression from "compression";
 import dotenv from "dotenv";
 import { globalLimiter } from "./config/limiter";
 import setupSwagger from "./swaggerConfig";
@@ -15,6 +17,7 @@ import banner from "./routes/banner.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import logger from "./config/logger";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 dotenv.config();
 
@@ -24,6 +27,10 @@ setupSwagger(app);
 
 app.use(cors(corsOptions));
 app.use(helmet());
+
+app.use(ExpressMongoSanitize());
+app.use(hpp());
+app.use(compression());
 
 app.use(logger);
 app.use(globalLimiter);
