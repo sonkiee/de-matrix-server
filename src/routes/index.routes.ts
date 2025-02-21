@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 router.get("/api", (req, res) => {
   res.json({
     message:
-      "Welcome to the FTL E-commerce API. Use /api/v1 to interact with the API endpoints.",
+      "Welcome to the FTL E-commerce API. Use /api to interact with the API endpoints.",
   });
 });
 
