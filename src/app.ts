@@ -39,9 +39,6 @@ app.use(globalLimiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(notFoundHandler);
-// app.use(errorHandler);
-
 app.use("/uploads", express.static("public/uploads"));
 
 // app.use("/", index);
@@ -52,6 +49,9 @@ app.use("/api/payment", payment);
 app.use("/api/orders", order);
 app.use("/api/category", category);
 app.use("/api/banners", banner);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
