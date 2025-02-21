@@ -8,7 +8,7 @@ const options = {
       title: "FTL Express API",
       version: "1.0.0",
       description:
-        "This is a simple API documentation with Swagger and TypeScript",
+        "FTL E-commerce API documentation with Swagger and TypeScript",
     },
     servers: [
       {
