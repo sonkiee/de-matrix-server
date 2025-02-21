@@ -16,10 +16,11 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"], // Path to the API docs (can include route or controller files)
+  apis: ["./src/routes/**/*.ts", "./src/controllers/**/*.ts"],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
+console.log(JSON.stringify(swaggerSpec, null, 2));
 
 const setupSwagger = (app: any) => {
   app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
