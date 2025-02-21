@@ -7,7 +7,9 @@ const connectDB = async (attempts = 5, delay = 3000) => {
   for (let i = 0; i < attempts; i++) {
     try {
       const conn = await mongoose.connect(process.env.MONGO_URI!, {});
-      console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+      console.log(
+        `✅ MongoDB Connected: ${conn.connection.host}in ${process.env.NODE_ENV} mode`
+      );
       return;
     } catch (error) {
       console.error(

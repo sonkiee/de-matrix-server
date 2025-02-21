@@ -54,10 +54,13 @@ const startServer = async () => {
   try {
     await connectDB();
     const NODE_ENV = process.env.NODE_ENV || "development";
+    const PORT = parseInt(process.env.PORT || "3000", 10);
     const HOST = process.env.HOST || "127.0.0.1";
-    const PORT = process.env.PORT || 3000;
+
     app.listen(PORT, HOST, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(
+        `🚀 Server is running on at http://${HOST}:${PORT} in ${NODE_ENV} mode`
+      );
     });
   } catch (error) {
     console.error("❌ Error starting server: ", error);
