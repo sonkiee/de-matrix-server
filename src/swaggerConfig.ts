@@ -20,10 +20,9 @@ const options = {
 };
 
 const swaggerSpec = swaggerJSDoc(options);
-console.log(JSON.stringify(swaggerSpec, null, 2));
 
 const setupSwagger = (app: any) => {
-  app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
 
 export default setupSwagger;
