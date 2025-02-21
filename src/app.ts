@@ -39,13 +39,13 @@ app.use(globalLimiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(notFoundHandler);
-app.use(errorHandler);
+// app.use(notFoundHandler);
+// app.use(errorHandler);
 
 app.use("/uploads", express.static("public/uploads"));
 
-app.use("/", index);
-app.use("/api", index);
+// app.use("/", index);
+// app.use("/api", index);
 app.use("/api/users", user);
 app.use("/api/products", product);
 app.use("/api/payment", payment);
