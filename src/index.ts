@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import dotenv from "dotenv";
 import { limiter } from "./config/limiter";
 import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
@@ -12,6 +13,8 @@ import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
 import banner from "./routes/banner.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
+
+dotenv.config();
 
 const app = express();
 
