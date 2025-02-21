@@ -53,8 +53,10 @@ app.use("/api/banners", banner);
 const startServer = async () => {
   try {
     await connectDB();
+    const NODE_ENV = process.env.NODE_ENV || "development";
+    const HOST = process.env.HOST || "127.0.0.1";
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
+    app.listen(PORT, HOST, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
     });
   } catch (error) {
