@@ -13,6 +13,8 @@ import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
 import banner from "./routes/banner.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
+import { corsOptions } from "./config/cors";
+import logger from "./config/logger";
 
 dotenv.config();
 
@@ -20,14 +22,17 @@ const app = express();
 
 setupSwagger(app);
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 
-app.use(morgan("dev"));
+app.use(logger);
 app.use(globalLimiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.use("/uploads", express.static("public/uploads"));
 
@@ -37,9 +42,6 @@ app.use("/api/payment", payment);
 app.use("/api/orders", order);
 app.use("/api/category", category);
 app.use("/api/banners", banner);
-
-app.use(notFoundHandler);
-app.use(errorHandler);
 
 const startServer = async () => {
   try {
