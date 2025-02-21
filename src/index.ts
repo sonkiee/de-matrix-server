@@ -11,6 +11,7 @@ import category from "./routes/category.routes";
 import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
 import banner from "./routes/banner.routes";
+import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 
 const app = express();
 
@@ -29,6 +30,9 @@ app.use("/api/payment", payment);
 app.use("/api/orders", order);
 app.use("/api/category", category);
 app.use("/api/banners", banner);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
