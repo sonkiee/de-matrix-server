@@ -6,16 +6,14 @@ const router = express.Router();
 router.get("/", (req, res) => {
   res.send(`
     <h1>Welcome to FTL E-commerce API</h1>
-    <p>Use <bold>/api</bold> to interact with the API endpoints. For API documentation, visit <a href="/doc">/doc</a> .</p>
+    <p>Use <strong>/api</strong> to interact with the API endpoints. For API documentation, visit <a href="/doc">/doc</a> .</p>
+    <p><em>For more information, visit the documentation at /doc </em></p>
   `);
 });
 
 // API entry point ("/api")
 router.get("/api", (req, res) => {
-  res.json({
-    message:
-      "Welcome to the FTL E-commerce API. Use /api to interact with the API endpoints.",
-  });
+  res.redirect("/doc"); // Auto-redirect to Swagger documentation
 });
 
 export default router;
