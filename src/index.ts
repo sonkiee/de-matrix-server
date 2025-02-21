@@ -1,4 +1,8 @@
 import express from "express";
+import cors from "cors";
+import hemlet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
 import user from "./routes/user.routes";
@@ -11,6 +15,8 @@ import banner from "./routes/banner.routes";
 const app = express();
 
 setupSwagger(app);
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
