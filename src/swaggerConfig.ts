@@ -24,9 +24,6 @@ const swaggerSpec = swaggerJSDoc(options);
 const setupSwagger = (app: any) => {
   // Swagger docs will be accessible at /doc
   app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-  // You can also make Swagger docs available at /api as an alternative.
-  app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
 
 export default setupSwagger;
