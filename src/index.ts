@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
+import { limiter } from "./config/limiter";
 import setupSwagger from "./swaggerConfig";
 import connectDB from "./config/database";
 import user from "./routes/user.routes";
@@ -21,6 +21,7 @@ app.use(cors());
 app.use(helmet());
 
 app.use(morgan("dev"));
+app.use(limiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
