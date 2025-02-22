@@ -252,8 +252,6 @@ const router = express.Router();
  *         description: Server error
  */
 
-router.get("/admin", getOrders);
-router.get("/admin/:id", getOrderById);
 router.get("/user/", protect, getUserOrders);
 router.get("/user/:id/", protect, getUserOrderById);
 router.post("/user/new", protect, newOrder);

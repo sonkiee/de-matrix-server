@@ -73,9 +73,13 @@ export const getProducts = async (
       res.status(404).json({ message: "No products found" });
       return;
     }
-    res.status(200).json({ products });
+    res.status(200).json({
+      success: true,
+      message: "Products retrieved successfully",
+      data: products,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ success: false, message: "Server error", error });
     return;
   }
 };
@@ -93,7 +97,11 @@ export const getProductById = async (
       return;
     }
 
-    res.status(200).json({ product });
+    res.status(200).json({
+      success: true,
+      message: "Product retrieved successfully",
+      data: product,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
@@ -125,7 +133,11 @@ export const updateProduct = async (
     product.sizes = sizes || product.sizes;
 
     await product.save();
-    res.status(200).json({ product });
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
@@ -133,20 +145,21 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
   try {
-    const product = await productModel.findById(id);
+    const product = await productModel.findByIdAndDelete(id);
 
     if (!product) {
       res.status(404).json({ message: "Product not found" });
       return;
     }
 
-    await product.remove();
-    res.status(200).json({ message: "Product removed" });
+    res
+      .status(200)
+      .json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;

@@ -15,6 +15,7 @@ import payment from "./routes/payment.routes";
 import order from "./routes/order.routes";
 import banner from "./routes/banner.routes";
 import index from "./routes/index.routes";
+import admin from "./routes/admin.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import logger from "./config/logger";
@@ -46,8 +47,9 @@ app.use("/api/users", user);
 app.use("/api/products", product);
 app.use("/api/payment", payment);
 app.use("/api/orders", order);
-app.use("/api/category", category);
+app.use("/api/categories", category);
 app.use("/api/banners", banner);
+app.use("/api/admin", admin);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

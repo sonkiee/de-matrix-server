@@ -6,6 +6,34 @@ import { AuthRequest } from "../middleware/auth.middleware";
 
 dotenv.config();
 
+export const getUser = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found " });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User details retrieved successfully",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error,
+    });
+    return;
+  }
+};
+
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
   try {
@@ -61,9 +89,12 @@ export const login = async (
       expiresIn: "30d",
     });
     res.status(200).json({
+      success: true,
       message: "Login successful",
-      user,
-      token,
+      data: {
+        user,
+        token,
+      },
     });
     return;
   } catch (error) {

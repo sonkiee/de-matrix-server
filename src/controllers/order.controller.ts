@@ -12,7 +12,11 @@ export const getOrders = async (req: AuthRequest, res: Response) => {
       res.status(404).json({ message: "No orders found" });
       return;
     }
-    res.status(200).json({ orders });
+    res.status(200).json({
+      success: true,
+      message: "Orders retrieved successfully",
+      data: orders,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
@@ -27,7 +31,11 @@ export const getOrderById = async (req: AuthRequest, res: Response) => {
       res.status(404).json({ message: "Order not found" });
       return;
     }
-    res.status(200).json({ order });
+    res.status(200).json({
+      success: true,
+      message: "Order details retrieved successfully",
+      data: order,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;

@@ -16,10 +16,13 @@ export const newCategory = async (req: AuthRequest, res: Response) => {
       res.status(400).json({ message: "Category already exists" });
       return;
     }
-    await categoryModel.create({
+    const category = await categoryModel.create({
       name,
     });
-    res.status(201).json({ message: "Category created" });
+    res.status(201).json({
+      success: true,
+      message: `Category ${category} created successfully`,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -34,7 +37,11 @@ export const getCategories = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    res.status(200).json({ categories });
+    res.status(200).json({
+      success: true,
+      message: "Categories retrived successfully",
+      data: categories,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
