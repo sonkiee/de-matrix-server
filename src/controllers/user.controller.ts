@@ -91,9 +91,10 @@ export const login = async (
     res.status(200).json({
       success: true,
       message: "Login successful",
-      user,
+      data: {
+        ...user,
         token,
-    
+      },
     });
     return;
   } catch (error) {
