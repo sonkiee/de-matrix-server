@@ -108,10 +108,14 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
     const user = await User.findById(req.user._id).select("-password");
 
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User does not exist" });
       return;
     }
-    res.status(200).json(user);
+    res.status(200).json({
+      success: true,
+      message: "User profile retrieved successfully",
+      user,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
