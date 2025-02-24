@@ -1,4 +1,5 @@
 import multer from "multer";
+import { AuthRequest } from "./auth.middleware";
 
 export const upload = multer({
   storage: multer.memoryStorage(),
@@ -9,7 +10,7 @@ export const upload = multer({
 
 const storage = multer.diskStorage({
   destination: "./public/uploads/",
-  filename: (req, file, cb) => {
+  filename: (req: AuthRequest, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
