@@ -197,15 +197,9 @@ const router = express.Router();
  *         description: Server error
  */
 
-router.get("/", (req, res) => {
-  res.json({ message: "User route" });
-});
 router.post("/register", register);
 router.post("/login", authLimiter, login);
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
-router.get("/admin", admin, (req, res) => {
-  res.json({ message: "Admin route" });
-});
 
 export default router;
