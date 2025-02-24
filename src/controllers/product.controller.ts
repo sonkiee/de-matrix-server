@@ -45,6 +45,13 @@ export const createProduct = async (
 
     const imageUrls = await Promise.all(files.map((file) => uploadToR2(file)));
 
+    const colorsArray = Array.isArray(colors)
+      ? colors
+      : colors.split(",").map((c) => c.trim());
+    const sizesArray = Array.isArray(sizes)
+      ? sizes
+      : sizes.split(",").map((s) => s.trim());
+
     const product = await productModel.create({
       name,
       description,
@@ -52,8 +59,8 @@ export const createProduct = async (
       category: existingCategory,
       stock,
       images: imageUrls,
-      colors,
-      sizes,
+      colors: colorsArray,
+      sizes: sizesArray,
     });
     res.status(201).json({ product });
   } catch (error) {
