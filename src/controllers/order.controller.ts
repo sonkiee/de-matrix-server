@@ -144,7 +144,11 @@ export const newOrder = async (
     });
 
     const createdOrder = await order.save();
-    res.status(201).json({ createdOrder });
+    res.status(201).json({
+      success: true,
+      message: "Order created successfully",
+      data: createdOrder,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
     return;
