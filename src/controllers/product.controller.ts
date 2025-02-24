@@ -47,10 +47,10 @@ export const createProduct = async (
 
     const colorsArray = Array.isArray(colors)
       ? colors
-      : colors.split(",").map((c) => c.trim());
+      : colors.split(",").map((c: string) => c.trim());
     const sizesArray = Array.isArray(sizes)
       ? sizes
-      : sizes.split(",").map((s) => s.trim());
+      : sizes.split(",").map((s: string) => s.trim());
 
     const product = await productModel.create({
       name,
