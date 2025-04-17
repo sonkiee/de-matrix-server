@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import categoryModel from "../models/category.model";
+import { Product } from "../models/product.model";
 
 export const newCategory = async (req: AuthRequest, res: Response) => {
   const { name } = req.body;
@@ -51,10 +52,14 @@ export const getCategoryById = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   try {
     const category = await categoryModel.findById(id).populate("products");
+
     if (!category) {
       res.status(404).json({ message: "Category not found" });
       return;
     }
+
+    const products = await Product.find({ category: id });
+    category.products = products;
     res.status(200).json({ category });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -69,6 +74,8 @@ export const getCategoryByName = async (req: AuthRequest, res: Response) => {
       res.status(404).json({ message: "Category not found" });
       return;
     }
+    const products = await Product.find({ category: category._id });
+    category.products = products;
     res.status(200).json({ category });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

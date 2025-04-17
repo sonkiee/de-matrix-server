@@ -3,8 +3,8 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import axios from "axios";
 import orderModel from "../models/order.model";
 import paymentModel from "../models/payment.model";
-import productModel from "../models/product.model";
 import mongoose from "mongoose";
+import { Product } from "../models/product.model";
 
 export const initializePayment = async (req: AuthRequest, res: Response) => {
   const user = req.user;
@@ -66,7 +66,7 @@ export const initializePayment = async (req: AuthRequest, res: Response) => {
     });
 
     for (const item of order.products) {
-      const product = await productModel.findById(item.product);
+      const product = await Product.findById(item.product);
       if (!product) {
         res.status(400).json({ message: `Product ${item.product} not found` });
         return;

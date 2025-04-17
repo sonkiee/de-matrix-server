@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import orderModel from "../models/order.model";
-import productModel from "../models/product.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { v4 as uuidv4 } from "uuid";
 import mongoose from "mongoose";
+import { Product } from "../models/product.model";
 
 export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
@@ -109,7 +109,7 @@ export const newOrder = async (
           .json({ message: `Invalid product ID: ${item.productId}` });
         return;
       }
-      const product = await productModel.findById(item.productId);
+      const product = await Product.findById(item.productId);
 
       if (!product) {
         res

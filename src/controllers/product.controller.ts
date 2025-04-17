@@ -1,10 +1,9 @@
-import productModel from "../models/product.model";
 import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
-
 import { uploadToR2 } from "../config/r2config";
 import categoryModel from "../models/category.model";
 import mongoose from "mongoose";
+import { Product } from "../models/product.model";
 
 export const createProduct = async (
   req: AuthRequest,
@@ -30,7 +29,7 @@ export const createProduct = async (
       return;
     }
 
-    const existingProduct = await productModel.findOne({ name });
+    const existingProduct = await Product.findOne({ name });
     if (existingProduct) {
       res
         .status(400)
@@ -52,7 +51,7 @@ export const createProduct = async (
       ? sizes
       : sizes.split(",").map((s: string) => s.trim());
 
-    const product = await productModel.create({
+    const product = await Product.create({
       name,
       description,
       price,
@@ -74,7 +73,12 @@ export const getProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const products = await productModel.find();
+    const filter = req.query.filter;
+    let query = {};
+    if (filter === "featured") query = { isFeatured: true };
+    if (filter === "bestseller") query = { isBestSeller: true };
+
+    const products = await Product.find(query);
 
     if (products && products.length === 0) {
       res.status(404).json({ message: "No products found" });
@@ -97,7 +101,7 @@ export const getProductById = async (
 ): Promise<void> => {
   const { id } = req.params;
   try {
-    const product = await productModel.findById(id);
+    const product = await Product.findById(id);
 
     if (!product) {
       res.status(404).json({ message: "Product not found" });
@@ -123,7 +127,7 @@ export const updateProduct = async (
     req.body;
   const { id } = req.params;
   try {
-    const product = await productModel.findById(id);
+    const product = await Product.findById(id);
 
     if (!product) {
       res.status(404).json({ message: "Product not found" });
@@ -157,7 +161,7 @@ export const deleteProduct = async (
 ): Promise<void> => {
   const { id } = req.params;
   try {
-    const product = await productModel.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
       res.status(404).json({ message: "Product not found" });

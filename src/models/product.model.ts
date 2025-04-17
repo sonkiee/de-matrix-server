@@ -6,6 +6,16 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sku: {
+      type: String,
+      required: true,
+      // unique: true,
+    },
+    type: {
+      type: String,
+      enum: ["smartphones", "parts", "tablets", "accessories"],
+      required: true,
+    },
     description: {
       type: String,
       required: true,
@@ -28,9 +38,14 @@ const ProductSchema = new mongoose.Schema(
     images: [{ type: String }],
     colors: [{ type: String }],
     sizes: [{ type: String }],
+    tags: [{ type: String }],
+
+    isFeatured: { type: Boolean, default: false },
+    isBestSeller: { type: Boolean, default: false },
+    isNewArrival: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { discriminatorKey: "type", timestamps: true }
 );
 
-export default mongoose.models.Product ||
-  mongoose.model("Product", ProductSchema);
+export const Product =
+  mongoose.models.Product || mongoose.model("Product", ProductSchema);
