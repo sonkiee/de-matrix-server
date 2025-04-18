@@ -198,7 +198,7 @@ const router = express.Router();
  */
 
 router.post("/register", register);
-router.post("/login", authLimiter, login);
+router.post("/login", login); // authLimiter
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
 

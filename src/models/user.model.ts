@@ -1,8 +1,9 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document, Types } from "mongoose";
 import bcrypt from "bcryptjs";
 
 interface IUser extends Document {
-  name: string;
+  fname: string;
+  lname: string;
   email: string;
   password: string;
   role: "user" | "admin";
@@ -10,14 +11,21 @@ interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
 
+  locations: Types.ObjectId[];
+
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUser>(
   {
-    name: {
+    fname: {
       type: String,
-      required: [true, "Please provide a name"],
+      required: [true, "Please provide a first name"],
+      trim: true,
+    },
+    lname: {
+      type: String,
+      required: [true, "Please provide a last name"],
       trim: true,
     },
     email: {
@@ -42,6 +50,7 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    locations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Location" }],
   },
   {
     timestamps: true,

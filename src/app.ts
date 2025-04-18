@@ -20,6 +20,7 @@ import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import logger from "./config/logger";
 import ExpressMongoSanitize from "express-mongo-sanitize";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ setupSwagger(app);
 
 app.use(cors(corsOptions));
 app.use(helmet());
+app.use(cookieParser());
 
 app.use(ExpressMongoSanitize());
 app.use(hpp());

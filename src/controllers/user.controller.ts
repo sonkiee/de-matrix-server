@@ -3,6 +3,8 @@ import User from "../models/user.model";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { sign } from "../utils/jwt";
+import { set } from "../utils/http-only-cookies";
 
 dotenv.config();
 
@@ -35,9 +37,9 @@ export const getUser = async (
 };
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { fname, lname, email, password } = req.body;
   try {
-    if (!name || !email || !password) {
+    if (!fname || lname || !email || !password) {
       res.status(400).json({ message: "Please enter all fields" });
       return;
     }
@@ -85,9 +87,10 @@ export const login = async (
       return;
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "30d",
-    });
+    const token = sign(user._id as string); // safest if your `sign` function accepts string
+
+    set(res, token); // set token cookie
+
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -122,14 +125,15 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 };
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
-  const { name } = req.body;
+  const { fname, lname } = req.body;
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
-    user.name = name || user.name;
+    user.fname = fname || user.fname;
+    user.lname = lname || user.lname;
     const updatedUser = await user.save();
     res.status(200).json(updatedUser);
   } catch (error) {
