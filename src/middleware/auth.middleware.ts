@@ -48,6 +48,7 @@ export const protect = async (
 export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
   if (req.user && req.user.role === "admin") {
     next();
+    return;
   } else {
     res.status(401).json({ message: "Not authorized as an admin" });
     return;
