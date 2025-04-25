@@ -201,5 +201,7 @@ router.post("/register", register);
 router.post("/login", login); // authLimiter
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
+router.put("/profile/address");
+router.get("/profile/address");
 
 export default router;
