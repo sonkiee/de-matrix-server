@@ -37,7 +37,7 @@ app.use(hpp());
 app.use(compression());
 
 app.use(logger);
-app.use(globalLimiter);
+// app.use(globalLimiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
