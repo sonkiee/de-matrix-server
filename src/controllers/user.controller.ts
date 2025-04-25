@@ -58,7 +58,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
 
     const token = sign(user._id as string);
-    await set(res, token);
+    set(res, token);
 
     res.status(201).json({
       success: true,
@@ -97,7 +97,6 @@ export const login = async (
     }
 
     const token = sign(user._id as string); // safest if your `sign` function accepts string
-
     set(res, token); // set token cookie
 
     res.status(200).json({
