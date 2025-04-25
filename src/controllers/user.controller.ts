@@ -39,7 +39,7 @@ export const getUser = async (
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { fname, lname, email, password } = req.body;
   try {
-    if (!fname || lname || !email || !password) {
+    if (!fname || !lname || !email || !password) {
       res.status(400).json({ message: "Please enter all fields" });
       return;
     }
@@ -51,7 +51,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     const user = await User.create({
-      name,
+      fname,
+      lname,
       email,
       password,
     });
