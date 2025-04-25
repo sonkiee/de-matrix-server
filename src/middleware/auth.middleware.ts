@@ -22,6 +22,7 @@ export const protect = async (
   try {
     const decoded = verify(token) as { id: string };
     if (!req.user) {
+      console.warn("Auth middleware: Token is valid but user not found.");
       return res
         .status(401)
         .json({ message: "Unauthorized: Missing user context" });
