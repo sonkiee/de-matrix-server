@@ -37,7 +37,7 @@ const getLocations = async (req: AuthRequest, res: Response) => {
     const locations = await Location.find({ customer: req.user._id });
 
     if (locations.length === 0) {
-      res.status(404).json({ message: "No locations found" });
+      res.status(401).json({ message: "You do not have a location stored" });
       return;
     }
 
