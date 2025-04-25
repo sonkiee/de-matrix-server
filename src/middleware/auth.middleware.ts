@@ -21,10 +21,15 @@ export const protect = async (
 
   try {
     const decoded = verify(token) as { id: string };
-
-    req.user = await User.findById(decoded.id).select("-password");
-
     if (!req.user) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Missing user context" });
+    }
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (user) {
       res.status(401).json({ message: "User not found" });
       return;
     }
