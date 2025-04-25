@@ -4,8 +4,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS?.split(",") || "*",
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: "http://localhost:3000", // or your frontend domain
+  credentials: true, // ✅ allow cookies
   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-  credentials: true,
 };
+
+// export const corsOptions = {
+//   origin: process.env.ALLOWED_ORIGINS?.split(",") || "*",
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+//   credentials: true,
+// };
