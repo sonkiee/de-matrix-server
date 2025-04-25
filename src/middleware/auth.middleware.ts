@@ -28,28 +28,24 @@ export const protect = async (
   try {
     const decoded = verify(token) as { id: string };
 
-    const user = await User.findById(decoded.id).select("-password");
+    req.user = await User.findById(decoded.id).select("-password");
 
-    if (!user) {
+    if (!req.user) {
       res.status(401).json({ message: "User not found" });
       return;
     }
 
-    req.user = user;
     next();
   } catch (error) {
     res.status(401).json({ message: "Not authorized, invalid token" });
-    return;
   }
 };
 
 export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
   if (req.user && req.user.role === "admin") {
     next();
-    return;
   } else {
     res.status(401).json({ message: "Not authorized as an admin" });
-    return;
   }
 };
 // Compare this snippet from src/controllers/payment.controller.ts:
