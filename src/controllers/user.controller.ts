@@ -57,9 +57,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password,
     });
 
-    res.status(201).json({ user });
+    const token = sign(user._id as string);
+    await set(res, token);
+
+    res.status(201).json({
+      success: true,
+      message: "Registration successful",
+      data: { user },
+    });
     return;
   } catch (error) {
+    console.error("Registration error:", error);
     res.status(500).json({ message: "Server error", error });
     return;
   }
