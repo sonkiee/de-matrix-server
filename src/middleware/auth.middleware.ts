@@ -12,21 +12,15 @@ export const protect = async (
   res: Response,
   next: NextFunction
 ) => {
-  let token;
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
-  if (req.cookies.token) {
-    token = req.cookies.token;
-  } else if (req.headers.authorization?.startsWith("Bearer ")) {
-    token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    console.warn("Auth middleware: No token found in request.");
+
+    return res.status(401).json({ message: "You must be logged in" });
   }
 
   try {
-    if (!token) {
-      res.status(401).json({ message: "You must be logged in" });
-      console.log("no token found");
-      return;
-    }
-
     const decoded = verify(token) as { id: string };
 
     req.user = await User.findById(decoded.id).select("-password");
