@@ -36,7 +36,6 @@ export const protect = async (
     }
 
     req.user = user;
-
     next();
     return;
   } catch (error) {
