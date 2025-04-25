@@ -89,7 +89,7 @@ export const login = async (
 
     const token = sign(user._id as string); // safest if your `sign` function accepts string
 
-    set(res, token); // set token cookie
+    await set(res, token); // set token cookie
 
     res.status(200).json({
       success: true,
