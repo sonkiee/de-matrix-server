@@ -23,6 +23,7 @@ export const protect = async (
   try {
     if (!token) {
       res.status(401).json({ message: "You must be logged in" });
+      console.log("no token found");
       return;
     }
 
