@@ -13,6 +13,7 @@ export const protect = async (
   next: NextFunction
 ) => {
   const token = req.cookies.token;
+  console.log("backend", token);
 
   if (!token) {
     console.warn("Auth middleware: No token found in request.");
