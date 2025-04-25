@@ -12,7 +12,13 @@ export const protect = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+  let token;
+
+  if (req.cookies.token) {
+    token = req.cookies.token;
+  } else if (req.headers.authorization?.startsWith("Bearer ")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
 
   if (!token) {
     res.status(401).json({ message: "You must be logged in" });
@@ -21,20 +27,18 @@ export const protect = async (
 
   try {
     const decoded = verify(token) as { id: string };
-    if (!req.user) {
-      console.warn("Auth middleware: Token is valid but user not found.");
-      res.status(401).json({ message: "Unauthorized: Missing user context" });
-      return;
-    }
 
     const user = await User.findById(decoded.id).select("-password");
 
-    if (user) {
+    if (!user) {
       res.status(401).json({ message: "User not found" });
       return;
     }
 
+    req.user = user;
+
     next();
+    return;
   } catch (error) {
     res.status(401).json({ message: "Not authorized, invalid token" });
     return;
@@ -46,6 +50,7 @@ export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
     next();
   } else {
     res.status(401).json({ message: "Not authorized as an admin" });
+    return;
   }
 };
 // Compare this snippet from src/controllers/payment.controller.ts:
