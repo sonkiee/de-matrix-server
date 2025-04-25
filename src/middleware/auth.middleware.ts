@@ -17,7 +17,7 @@ export const protect = async (
   if (!token) {
     console.warn("Auth middleware: No token found in request.");
 
-    res.status(401).json({ message: "You must be logged in" });
+    res.status(401).json({ message: "Verily, You must be logged in" });
     return;
   }
 
