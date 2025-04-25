@@ -23,9 +23,8 @@ export const protect = async (
     const decoded = verify(token) as { id: string };
     if (!req.user) {
       console.warn("Auth middleware: Token is valid but user not found.");
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: Missing user context" });
+      res.status(401).json({ message: "Unauthorized: Missing user context" });
+      return;
     }
 
     const user = await User.findById(decoded.id).select("-password");
