@@ -16,14 +16,12 @@ export const protect = async (
 
   if (!token) {
     console.warn("Auth middleware: No token found in request.");
-
     res.status(401).json({ message: "Verily, You must be logged in" });
     return;
   }
 
   try {
     const decoded = verify(token) as { id: string };
-
     req.user = await User.findById(decoded.id).select("-password");
 
     if (!req.user) {
@@ -34,6 +32,7 @@ export const protect = async (
     next();
   } catch (error) {
     res.status(401).json({ message: "Not authorized, invalid token" });
+    return;
   }
 };
 
