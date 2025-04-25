@@ -20,12 +20,12 @@ export const protect = async (
     token = req.headers.authorization.split(" ")[1];
   }
 
-  if (!token) {
-    res.status(401).json({ message: "You must be logged in" });
-    return;
-  }
-
   try {
+    if (!token) {
+      res.status(401).json({ message: "You must be logged in" });
+      return;
+    }
+
     const decoded = verify(token) as { id: string };
 
     req.user = await User.findById(decoded.id).select("-password");
