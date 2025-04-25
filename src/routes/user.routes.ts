@@ -202,7 +202,7 @@ router.post("/register", register);
 router.post("/login", login); // authLimiter
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
-router.put("/profile/address", addLocation);
-router.get("/profile/address", getLocations);
+router.put("/profile/addressess", addLocation);
+router.get("/profile/addressess", getLocations);
 
 export default router;
