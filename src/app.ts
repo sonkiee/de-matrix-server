@@ -44,7 +44,7 @@ const startServer = async () => {
   try {
     await connectDB();
     const NODE_ENV = process.env.NODE_ENV || "development";
-    const PORT = parseInt(process.env.PORT || "3000", 10);
+    const PORT = parseInt(process.env.PORT || "3001");
     const HOST = process.env.HOST || "127.0.0.1";
 
     app.listen(PORT, HOST, () => {
