@@ -4,31 +4,26 @@ import { Location } from "../models/location.model";
 import User from "../models/user.model";
 
 const newAddress = async (req: AuthRequest, res: Response) => {
-  const { address, city, state, zip, country, label } = req.body;
+  const { label } = req.body;
+
+  const requiredFields = ["address", "city", "state", "zip", "country"];
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      message: `Missing required fields: ${missingFields.join(", ")}`,
+    });
+  }
 
   try {
-    Object.keys(req.body).forEach((key) => {});
-
-    if (!address || !city || !state || !zip || !country) {
-      res.status(400).json({ message: "Please enter all fields" });
-      return;
-    }
-
     const user = await User.findById(req.user._id);
-
     if (!user) {
-      res.status(401).json({ message: "User not found" });
-      return;
+      return res.status(401).json({ message: "User not found" });
     }
 
     const location = await Location.create({
-      address,
-      city,
-      state,
-      zip,
-      country,
-      label,
-      userId: user._id,
+      ...req.body,
+      customer: user._id,
     });
 
     res.status(201).json({
