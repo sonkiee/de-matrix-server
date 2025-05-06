@@ -5,7 +5,7 @@ const LocationSchema = new mongoose.Schema(
     address: { type: String },
     city: { type: String },
     state: { type: String },
-    zipCode: { type: String },
+    zip: { type: String },
     country: { type: String },
     label: { type: String, enum: ["primary", "secondary"] },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },

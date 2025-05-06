@@ -3,11 +3,11 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import { Location } from "../models/location.model";
 
 const addLocation = async (req: AuthRequest, res: Response) => {
-  const { address, city, state, zipCode, country, label } = req.body;
+  const { address, city, state, zip, country, label } = req.body;
   const { user } = req;
 
   try {
-    if (!address || !city || !state || !zipCode || !country || !label) {
+    if (!address || !city || !state || !zip || !country) {
       res.status(400).json({ message: "Please enter all fields" });
       return;
     }
@@ -16,7 +16,7 @@ const addLocation = async (req: AuthRequest, res: Response) => {
       address,
       city,
       state,
-      zipCode,
+      zip,
       country,
       label,
       customer: user._id,
