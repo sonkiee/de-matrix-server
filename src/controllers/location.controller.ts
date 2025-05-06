@@ -1,14 +1,21 @@
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { Location } from "../models/location.model";
+import User from "../models/user.model";
 
 const newAddress = async (req: AuthRequest, res: Response) => {
   const { address, city, state, zip, country, label } = req.body;
-  const { user } = req;
 
   try {
     if (!address || !city || !state || !zip || !country) {
       res.status(400).json({ message: "Please enter all fields" });
+      return;
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(401).json({ message: "User not found" });
       return;
     }
 
@@ -19,7 +26,7 @@ const newAddress = async (req: AuthRequest, res: Response) => {
       zip,
       country,
       label,
-      customer: user._id,
+      userId: user._id,
     });
 
     res.status(201).json({

@@ -8,7 +8,7 @@ const LocationSchema = new mongoose.Schema(
     zip: { type: String },
     country: { type: String },
     label: { type: String, enum: ["primary", "secondary"] },
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   },
   {
     timestamps: true,
