@@ -22,13 +22,13 @@ export const protect = async (
 
   try {
     const decoded = verify(token) as { id: string };
-    req.user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.id);
 
-    if (!req.user) {
+    if (user) {
       res.status(401).json({ message: "User not found" });
       return;
     }
-
+    req.user = user;
     next();
   } catch (error) {
     res.status(401).json({ message: "Not authorized, invalid token" });
