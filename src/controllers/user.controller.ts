@@ -65,7 +65,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       message: "Registration successful",
       data: { user },
     });
-    return;
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ message: "Server error", error });
@@ -107,7 +106,6 @@ export const login = async (
         token,
       },
     });
-    return;
   } catch (error) {
     console.error("Server error", error);
     res.status(500).json({ message: "Server error", error });
