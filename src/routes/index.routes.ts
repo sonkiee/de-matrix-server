@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import user from "./user.routes";
 import product from "./product.routes";
 import category from "./category.routes";
@@ -9,7 +9,7 @@ import auth from "./auth.routes";
 import banner from "./banner.routes";
 import address from "./location.routes";
 
-const router = express.Router();
+const router = Router();
 
 // Home route ("/")
 router.get("/", (req: Request, res: Response) => {
