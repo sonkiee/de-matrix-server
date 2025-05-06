@@ -7,7 +7,7 @@ import {
 } from "../controllers/user.controller";
 import { protect, admin } from "../middleware/auth.middleware";
 import { authLimiter } from "../config/limiter";
-import { addLocation, getLocations } from "../controllers/location.controller";
+import { newAddress, getAddress } from "../controllers/location.controller";
 
 const router = express.Router();
 
@@ -202,7 +202,7 @@ router.post("/register", register);
 router.post("/login", login); // authLimiter
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
-router.put("/profile/addresses", protect, addLocation);
-router.get("/profile/addresses", protect, getLocations);
+router.post("/profile/addresses", protect, newAddress);
+router.get("/profile/addresses", protect, getAddress);
 
 export default router;
