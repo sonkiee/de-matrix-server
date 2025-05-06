@@ -4,32 +4,35 @@ import { Location } from "../models/location.model";
 import User from "../models/user.model";
 
 const newAddress = async (req: AuthRequest, res: Response) => {
-  const { label } = req.body;
-
-  const requiredFields = ["address", "city", "state", "zip", "country"];
-  const missingFields = requiredFields.filter((field) => !req.body[field]);
-
-  if (missingFields.length > 0) {
-    return res.status(400).json({
-      message: `Missing required fields: ${missingFields.join(", ")}`,
-    });
-  }
+  const { address, city, state, zip, country, label } = req.body;
 
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
-    }
+    // if (!address || !city || !state || !zip || !country) {
+    //   res.status(400).json({ message: "Please enter all fields" });
+    //   return;
+    // }
 
-    const location = await Location.create({
-      ...req.body,
-      customer: user._id,
-    });
+    // const user = await User.findById(req.user._id);
+
+    // if (!user) {
+    //   res.status(401).json({ message: "User not found" });
+    //   return;
+    // }
+
+    // const location = await Location.create({
+    //   address,
+    //   city,
+    //   state,
+    //   zip,
+    //   country,
+    //   label,
+    //   userId: user._id,
+    // });
 
     res.status(201).json({
       success: true,
       message: "Location added successfully",
-      data: location,
+      data: req.body,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
