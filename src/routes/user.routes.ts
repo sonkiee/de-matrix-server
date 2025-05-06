@@ -195,7 +195,7 @@ const router = express.Router();
 
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
-router.post("/profile/addresses", protect, newAddress);
-router.get("/profile/addresses", protect, getAddress);
+router.post("/profile/address", protect, newAddress);
+router.get("/profile/address", protect, getAddress);
 
 export default router;
