@@ -29,7 +29,7 @@ router.use("/auth", auth); // Authentication middleware
 router.use("/user", user);
 router.use("/products", product);
 router.use("/payment", payment);
-router.use("/orders", order);
+router.use("/user/order", order);
 router.use("/categories", category);
 router.use("/banners", banner);
 router.use("/admin", admin);
