@@ -7,6 +7,8 @@ const newAddress = async (req: AuthRequest, res: Response) => {
   const { address, city, state, zip, country, label } = req.body;
 
   try {
+    Object.keys(req.body).forEach((key) => {});
+
     if (!address || !city || !state || !zip || !country) {
       res.status(400).json({ message: "Please enter all fields" });
       return;
