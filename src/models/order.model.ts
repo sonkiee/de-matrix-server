@@ -41,7 +41,8 @@ const OrderSchema = new mongoose.Schema(
       sparse: true,
     },
     shippingAddress: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
       required: true,
     },
     status: {
@@ -53,10 +54,6 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "paid", "failed"],
       default: "pending",
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
