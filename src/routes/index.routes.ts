@@ -1,4 +1,12 @@
 import express, { Request, Response } from "express";
+import user from "./user.routes";
+import product from "./product.routes";
+import category from "./category.routes";
+import payment from "./payment.routes";
+import order from "./order.routes";
+import admin from "./admin.routes";
+import banner from "./banner.routes";
+import address from "./location.routes";
 
 const router = express.Router();
 
@@ -15,5 +23,16 @@ router.get("/", (req: Request, res: Response) => {
 router.get("/api", (req: Request, res: Response) => {
   res.redirect("/doc"); // Auto-redirect to Swagger documentation
 });
+
+router.use("/api/users", user);
+router.use("/api/products", product);
+router.use("/api/payment", payment);
+router.use("/api/orders", order);
+router.use("/api/categories", category);
+router.use("/api/banners", banner);
+router.use("/api/admin", admin);
+router.use("/api/user/address", address);
+
+router.use("/uploads", express.static("public/uploads"));
 
 export default router;
