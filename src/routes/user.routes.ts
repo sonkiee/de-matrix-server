@@ -1,10 +1,5 @@
 import express from "express";
-import {
-  register,
-  login,
-  updateProfile,
-  getProfile,
-} from "../controllers/user.controller";
+import { updateProfile, getProfile } from "../controllers/user.controller";
 import { protect, admin } from "../middleware/auth.middleware";
 import { authLimiter } from "../config/limiter";
 import { newAddress, getAddress } from "../controllers/location.controller";
@@ -198,8 +193,6 @@ const router = express.Router();
  *         description: Server error
  */
 
-router.post("/register", register);
-router.post("/login", login); // authLimiter
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
 router.post("/profile/addresses", protect, newAddress);
