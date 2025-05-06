@@ -22,8 +22,8 @@ const app = express();
 setupSwagger(app);
 
 app.use(cors(corsOptions));
-app.use(helmet());
 app.use(cookieParser());
+app.use(helmet());
 
 app.use(ExpressMongoSanitize());
 app.use(hpp());
@@ -35,7 +35,7 @@ app.use(logger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(routes);
+app.use("/api", routes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
