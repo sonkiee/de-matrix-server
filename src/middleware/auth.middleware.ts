@@ -24,7 +24,7 @@ export const protect = async (
     const decoded = verify(token) as { id: string };
     const user = await User.findById(decoded.id);
 
-    if (user) {
+    if (!user) {
       res.status(401).json({ message: "User not found" });
       return;
     }
