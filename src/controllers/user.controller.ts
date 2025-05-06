@@ -28,11 +28,11 @@ export const getUser = async (
       data: user,
     });
   } catch (error) {
+    console.error("Server error", error);
     res.status(500).json({
       message: "Server error",
       error,
     });
-    return;
   }
 };
 
@@ -109,6 +109,7 @@ export const login = async (
     });
     return;
   } catch (error) {
+    console.error("Server error", error);
     res.status(500).json({ message: "Server error", error });
     return;
   }
@@ -128,6 +129,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
       user,
     });
   } catch (error) {
+    console.error("Server error", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -145,6 +147,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     const updatedUser = await user.save();
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.error("Server error", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
