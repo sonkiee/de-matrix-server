@@ -26,7 +26,7 @@ router.get("/api", (req: Request, res: Response) => {
 });
 
 router.use("/auth", auth); // Authentication middleware
-router.use("/users", user);
+router.use("/user", user);
 router.use("/products", product);
 router.use("/payment", payment);
 router.use("/orders", order);
