@@ -2,7 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { Location } from "../models/location.model";
 
-const addLocation = async (req: AuthRequest, res: Response) => {
+const newAddress = async (req: AuthRequest, res: Response) => {
   const { address, city, state, zip, country, label } = req.body;
   const { user } = req;
 
@@ -32,7 +32,7 @@ const addLocation = async (req: AuthRequest, res: Response) => {
   }
 };
 
-const getLocations = async (req: AuthRequest, res: Response) => {
+const getAddress = async (req: AuthRequest, res: Response) => {
   try {
     const locations = await Location.find({ customer: req.user._id });
 
@@ -52,4 +52,4 @@ const getLocations = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export { addLocation, getLocations };
+export { newAddress, getAddress };
