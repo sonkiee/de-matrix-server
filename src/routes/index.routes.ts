@@ -5,6 +5,7 @@ import category from "./category.routes";
 import payment from "./payment.routes";
 import order from "./order.routes";
 import admin from "./admin.routes";
+import auth from "./auth.routes";
 import banner from "./banner.routes";
 import address from "./location.routes";
 
@@ -24,14 +25,15 @@ router.get("/api", (req: Request, res: Response) => {
   res.redirect("/doc"); // Auto-redirect to Swagger documentation
 });
 
-router.use("/api/users", user);
-router.use("/api/products", product);
-router.use("/api/payment", payment);
-router.use("/api/orders", order);
-router.use("/api/categories", category);
-router.use("/api/banners", banner);
-router.use("/api/admin", admin);
-router.use("/api/user/address", address);
+router.use("/auth", auth); // Authentication middleware
+router.use("/users", user);
+router.use("/products", product);
+router.use("/payment", payment);
+router.use("/orders", order);
+router.use("/categories", category);
+router.use("/banners", banner);
+router.use("/admin", admin);
+router.use("/user/address", address);
 
 router.use("/uploads", express.static("public/uploads"));
 
