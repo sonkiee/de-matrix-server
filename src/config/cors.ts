@@ -7,6 +7,7 @@ export const corsOptions = {
   origin: "http://localhost:3000", // or your frontend domain
   credentials: true, // ✅ allow cookies
   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // export const corsOptions = {
