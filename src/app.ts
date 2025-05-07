@@ -14,6 +14,8 @@ import { corsOptions } from "./config/cors";
 import logger from "./config/logger";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import winston from "winston";
 
 dotenv.config();
 
@@ -41,6 +43,8 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 const startServer = async () => {
+  // Connect to MongoDB database and start the server.
+  winston.info("Starting server...");
   try {
     await connectDB();
     const NODE_ENV = process.env.NODE_ENV || "development";
