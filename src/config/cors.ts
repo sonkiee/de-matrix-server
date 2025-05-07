@@ -8,7 +8,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
 );
 export const corsOptions = {
   origin: function (
-    origin: string,
+    origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || ALLOWED_ORIGINS?.includes(origin)) {
