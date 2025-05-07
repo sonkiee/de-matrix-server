@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import winston from "winston";
 
 dotenv.config();
 
 const connectDB = async (attempts = 5, delay = 3000) => {
   for (let i = 0; i < attempts; i++) {
-    winston.info("Attempting to connect to DB...");
+    console.log("Attempting to connect to DB...");
     try {
       const conn = await mongoose.connect(process.env.MONGO_URI!, {});
       console.log(
@@ -23,7 +22,6 @@ const connectDB = async (attempts = 5, delay = 3000) => {
         delay *= 2; // Exponential backoff
       } else {
         console.error("🚨 Could not connect to MongoDB. Exiting...");
-        winston.error("Database connection failed:", error);
         process.exit(1);
       }
     }

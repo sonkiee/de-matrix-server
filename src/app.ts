@@ -44,7 +44,7 @@ app.use(errorHandler);
 
 const startServer = async () => {
   // Connect to MongoDB database and start the server.
-  winston.info("Starting server...");
+  console.log("Starting server...");
   try {
     await connectDB();
     const NODE_ENV = process.env.NODE_ENV || "development";
