@@ -6,7 +6,6 @@ dotenv.config();
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
   origin.trim()
 );
-console.log("Allowed origins:", ALLOWED_ORIGINS);
 if (!ALLOWED_ORIGINS) {
   throw new Error("Missing ALLOWED_ORIGINS environment variable."); // Handle this error in your production code.
 }
@@ -22,8 +21,6 @@ export const corsOptions = {
     "X-Requested-With",
   ],
 };
-
-console.log("CORS options:", corsOptions);
 
 // export const corsOptions = {
 //   origin: process.env.ALLOWED_ORIGINS?.split(",") || "*",
