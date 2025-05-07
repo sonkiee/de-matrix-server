@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-cconst ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
   origin.trim()
 );
 export const corsOptions = {
@@ -17,7 +17,6 @@ export const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   }, // or your frontend domain
-  credentials: true, // ✅ allow cookies
   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   allowedHeaders: [
     "Content-Type",
