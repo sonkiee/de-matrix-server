@@ -11,7 +11,7 @@ if (!ALLOWED_ORIGINS) {
   throw new Error("Missing ALLOWED_ORIGINS environment variable."); // Handle this error in your production code.
 }
 export const corsOptions = {
-  origin: [ALLOWED_ORIGINS], // or your frontend domain
+  origin: ALLOWED_ORIGINS, // or your frontend domain
   credentials: true, // ✅ allow cookies
   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   allowedHeaders: [
