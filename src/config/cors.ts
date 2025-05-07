@@ -3,13 +3,20 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS;
-console.log("Allowed origins:", ALLOWED_ORIGINS);
-if (!ALLOWED_ORIGINS) {
-  throw new Error("Missing ALLOWED_ORIGINS environment variable."); // Handle this error in your production code.
-}
+cconst ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
+  origin.trim()
+);
 export const corsOptions = {
-  origin: [ALLOWED_ORIGINS], // or your frontend domain
+  origin: function (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) {
+    if (!origin || ALLOWED_ORIGINS?.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }, // or your frontend domain
   credentials: true, // ✅ allow cookies
   methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   allowedHeaders: [
