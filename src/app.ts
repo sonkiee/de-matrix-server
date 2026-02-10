@@ -11,15 +11,14 @@ import routes from "./routes/index.routes";
 
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
-import logger from "./config/logger";
+import httpLogger from "./middleware/http-logger.middleware";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
-import winston from "winston";
+import logger from "./config/logger";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 
 setupSwagger(app);
 
@@ -31,7 +30,7 @@ app.use(ExpressMongoSanitize());
 app.use(hpp());
 app.use(compression());
 
-app.use(logger);
+app.use(httpLogger);
 // app.use(globalLimiter);
 
 app.use(express.json());
@@ -41,25 +40,3 @@ app.use("/api", routes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
-
-const startServer = async () => {
-  // Connect to MongoDB database and start the server.
-  console.log("Starting server...");
-  try {
-    await connectDB();
-    const NODE_ENV = process.env.NODE_ENV || "development";
-    const PORT = parseInt(process.env.PORT || "3001");
-    const HOST = process.env.HOST || "127.0.0.1";
-
-    app.listen(PORT, HOST, () => {
-      console.log(
-        `🚀 Server is running on at http://${HOST}:${PORT} in ${NODE_ENV} mode`
-      );
-    });
-  } catch (error) {
-    console.error("❌ Error starting server: ", error);
-    process.exit(1);
-  }
-};
-
-startServer();
