@@ -6,13 +6,11 @@ import compression from "compression";
 import dotenv from "dotenv";
 import { globalLimiter } from "./config/limiter";
 import setupSwagger from "./swaggerConfig";
-import connectDB from "./config/database";
 import routes from "./routes/index.routes";
 
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import httpLogger from "./middleware/http-logger.middleware";
-import ExpressMongoSanitize from "express-mongo-sanitize";
 import cookieParser from "cookie-parser";
 import logger from "./config/logger";
 
@@ -26,7 +24,6 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(helmet());
 
-app.use(ExpressMongoSanitize());
 app.use(hpp());
 app.use(compression());
 

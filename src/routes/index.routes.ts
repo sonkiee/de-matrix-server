@@ -1,13 +1,15 @@
 import express, { Request, Response, Router } from "express";
-import user from "./user.routes";
-import product from "./product.routes";
-import category from "./category.routes";
-import payment from "./payment.routes";
-import order from "./order.routes";
-import admin from "./admin.routes";
-import auth from "./auth.routes";
-import banner from "./banner.routes";
-import address from "./location.routes";
+import user from "../modules/user/user.routes";
+import product from "../modules/product/product.routes";
+import category from "../modules/category/category.routes";
+// import payment from "./payment.routes";
+import order from "../modules/order/order.routes";
+// import admin from "./admin.routes";
+import auth from "../modules/auth/auth.routes";
+import brand from "../modules/brand/brand.routes";
+import { admin } from "../middleware/auth.middleware";
+// import banner from "./banner.routes";
+// import address from "./location.routes";
 
 const router = Router();
 
@@ -27,14 +29,16 @@ router.get("/api", (req: Request, res: Response) => {
 
 router.use("/auth", auth); // Authentication middleware
 router.use("/user", user);
-router.use("/product", product);
-router.use("/order/payment", payment);
-router.use("/user/order", order);
+router.use("/brands", brand);
+router.use("/products", product);
+// router.use("/order/payment", payment);
+router.use("/orders", order);
 router.use("/categories", category);
-router.use("/banners", banner);
-router.use("/admin", admin);
-router.use("/user/address", address);
+// router.use("/banners", banner);
+// router.use("/admin", admin);
+// router.use("/user/address", address);
 
-router.use("/uploads", express.static("public/uploads"));
+// router.use("/uploads", express.static("public/uploads"));
+router.get("/favicon.ico", (_req, res) => res.status(204).end());
 
 export default router;

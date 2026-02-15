@@ -1,10 +1,10 @@
-import { Router } from "express";
-import { getAddress, newAddress } from "../controllers/location.controller";
-import { protect } from "../middleware/auth.middleware";
+// import { Router } from "express";
+// import { getAddress, newAddress } from "../controllers/location.controller";
+// import { protect } from "../middleware/auth.middleware";
 
-const router = Router();
+// const router = Router();
 
-router.post("/", protect, newAddress);
-router.get("/", protect, getAddress);
+// router.post("/", protect, newAddress);
+// router.get("/", protect, getAddress);
 
-export default router;
+// export default router;

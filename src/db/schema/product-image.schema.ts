@@ -8,6 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { products } from "./product.schema";
+import { relations } from "drizzle-orm";
 
 export const productImages = pgTable(
   "product_images",
@@ -25,3 +26,10 @@ export const productImages = pgTable(
   },
   (t) => [index("product_images_product_idx").on(t.productId)],
 );
+
+export const productImageRelations = relations(productImages, ({ one }) => ({
+  product: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
+}));

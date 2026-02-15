@@ -1,12 +1,10 @@
 import {
   AnyPgColumn,
-  boolean,
   index,
   integer,
   jsonb,
   numeric,
   pgTable,
-  text,
   timestamp,
   uniqueIndex,
   uuid,
@@ -100,6 +98,14 @@ export const orderItems = pgTable(
 export const orderRelations = relations(orders, ({ one, many }) => ({
   user: one(users, { fields: [orders.userId], references: [users.id] }),
   items: many(orderItems),
+}));
+
+export const orderItemRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
+  variant: one(productVariants, {
+    fields: [orderItems.variantId],
+    references: [productVariants.id],
+  }),
 }));
 
 export type Order = InferSelectModel<typeof orders>;

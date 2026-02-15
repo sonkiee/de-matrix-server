@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { verify } from "../utils/jwt";
 import { db } from "../db";
-import { User } from "../types/request";
+import { Request, User } from "../types/request";
 
 function getToken(req: any): string | undefined {
   const cookieToken = req.cookies?.token;
@@ -50,16 +50,12 @@ export const protect = async (
     next();
     return;
   } catch (error) {
-    res.status(401).json({ message: "Not authorized, invalid token" });
+    res.status(401).json({ message: "Invalid or expired token" });
     return;
   }
 };
 
-export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (req.user && req.user.role === "admin") {
-    next();
-  } else {
-    res.status(401).json({ message: "Not authorized as an admin" });
-  }
+export const admin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user && req.user.role === "admin") return next();
+  res.status(403).json({ message: "Admin access required" });
 };
-// Compare this snippet from src/controllers/payment.controller.ts:
