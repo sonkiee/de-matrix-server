@@ -2,14 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import logger from "../config/logger";
 import { ZodError } from "zod";
 
-export const notFoundHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
-  res.status(404);
-  next(error);
+export const methodNotAllowedHandler = (req: Request, res: Response) => {
+  const error = `method ${req.method} not allowed on ${req.originalUrl}`;
+  logger.warn(error);
+  return res.status(405).json({
+    message: error,
+  });
+};
+
+export const notFoundHandler = (req: Request, res: Response) => {
+  const error = `path not found for: ${req.method} ${req.originalUrl}`;
+  logger.warn(error);
+  return res.status(404).json({
+    message: error,
+  });
 };
 
 export const errorHandler = (

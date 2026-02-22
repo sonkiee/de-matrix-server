@@ -1,29 +1,11 @@
-import swaggerJSDoc from "swagger-jsdoc";
+import { Express } from "express";
 import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import path from "path";
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "FTL Express API",
-      version: "1.0.0",
-      description:
-        "FTL E-commerce API documentation with Swagger and TypeScript",
-    },
-    servers: [
-      {
-        url: "http://localhost:3000",
-      },
-    ],
-  },
-  apis: ["./src/routes/**/*.ts", "./src/controllers/**/*.ts"],
-};
+export default function setupSwagger(app: Express) {
+  const specPath = path.join(process.cwd(), "openapi.yaml");
+  const swaggerDocument = YAML.load(specPath);
 
-const swaggerSpec = swaggerJSDoc(options);
-
-const setupSwagger = (app: any) => {
-  // Swagger docs will be accessible at /doc
-  app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-};
-
-export default setupSwagger;
+  app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}

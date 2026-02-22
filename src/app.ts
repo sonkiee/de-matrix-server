@@ -8,7 +8,11 @@ import { globalLimiter } from "./config/limiter";
 import setupSwagger from "./swaggerConfig";
 import routes from "./routes/index.routes";
 
-import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
+import {
+  errorHandler,
+  methodNotAllowedHandler,
+  notFoundHandler,
+} from "./middleware/error.middleware";
 import { corsOptions } from "./config/cors";
 import httpLogger from "./middleware/http-logger.middleware";
 import cookieParser from "cookie-parser";
@@ -17,8 +21,6 @@ import logger from "./config/logger";
 dotenv.config();
 
 export const app = express();
-
-setupSwagger(app);
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -33,7 +35,9 @@ app.use(httpLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", routes);
+setupSwagger(app);
+
+app.use(routes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: Ehhh API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /:
+    get:
+      summary: Root health
+      responses:
+        "200":
+          description: OK
+
+  /api:
+    get:
+      summary: Redirect to docs
+      responses:
+        "302":
+          description: Redirects to /doc
+
+  /api/auth/register:
+    post:
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Validation error
+
+  /api/products:
+    get:
+      summary: List products
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create product
+      responses:
+        "201":
+          description: Created
+
+  /api/products/{id}:
+    get:
+      summary: Get product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not found
