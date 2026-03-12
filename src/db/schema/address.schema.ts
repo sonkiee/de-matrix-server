@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { addressLabelEnum } from "./enum";
 import { users } from "./user.schema";
+import { Infer } from "zod";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const addresses = pgTable(
   "addresses",
@@ -19,11 +21,17 @@ export const addresses = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
 
     label: addressLabelEnum("label").notNull().default("primary"),
-    addressLine: text("address_line"), // street/address
-    city: varchar("city", { length: 80 }),
-    state: varchar("state", { length: 80 }),
+
+    // delivery contact
+    firstName: varchar("first_name", { length: 80 }).notNull(),
+    lastName: varchar("last_name", { length: 80 }).notNull(),
+    phone: varchar("phone", { length: 30 }).notNull(),
+
+    address: text("address_line").notNull(),
+    city: varchar("city", { length: 80 }).notNull(),
+    state: varchar("state", { length: 80 }).notNull(),
     zip: varchar("zip", { length: 30 }),
-    country: varchar("country", { length: 80 }).default("Nigeria"),
+    country: varchar("country", { length: 80 }).notNull().default("Nigeria"),
 
     isDefault: boolean("is_default").notNull().default(false),
 
@@ -36,3 +44,6 @@ export const addresses = pgTable(
   },
   (t) => [index("addresses_user_idx").on(t.userId)],
 );
+
+export type Address = InferSelectModel<typeof addresses>;
+export type NewAddress = InferInsertModel<typeof addresses>;

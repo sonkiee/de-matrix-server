@@ -1,5 +1,6 @@
 import { db } from "./db";
 import { brands, categories, products, productVariants } from "./db/schema"; // include productVariants
+import { seedMoreProducts } from "./extra-seed";
 
 function slugify(input: string) {
   return input
@@ -131,6 +132,8 @@ async function main() {
     productId: product.id,
     productSlug: product.slug,
   });
+
+  await seedMoreProducts();
 }
 
 main()

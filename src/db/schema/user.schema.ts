@@ -19,8 +19,10 @@ export const users = pgTable(
   "users",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    fullName: varchar("full_name", { length: 80 }).notNull(),
+    firstName: varchar("first_name", { length: 80 }).notNull(),
+    lastName: varchar("last_name", { length: 80 }).notNull(),
     email: varchar("email", { length: 180 }).notNull(),
+    phone: varchar("phone", { length: 20 }),
     password: text("password").notNull(),
     role: userRoleEnum("role").notNull().default("customer"),
     isVerified: boolean("is_verified").notNull().default(false),
@@ -32,7 +34,8 @@ export const users = pgTable(
       .defaultNow(),
   },
   (t) => [
-    index("users_full_name_idx").on(t.fullName),
+    index("users_first_name_idx").on(t.firstName),
+    index("users_last_name_idx").on(t.lastName),
     uniqueIndex("users_email_ux").on(t.email),
     index("users_role_idx").on(t.role),
   ],

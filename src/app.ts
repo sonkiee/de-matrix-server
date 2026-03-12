@@ -17,10 +17,13 @@ import { corsOptions } from "./config/cors";
 import httpLogger from "./middleware/http-logger.middleware";
 import cookieParser from "cookie-parser";
 import logger from "./config/logger";
+import { PaymentsController } from "./modules/payment/payment.controller";
 
 dotenv.config();
 
 export const app = express();
+
+const paymentController = new PaymentsController();
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -31,6 +34,12 @@ app.use(compression());
 
 app.use(httpLogger);
 // app.use(globalLimiter);
+
+app.post(
+  "/api/order/payment/webhook",
+  express.raw({ type: "application/json" }),
+  paymentController.webhook,
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -7,10 +7,20 @@ const NODE_ENV = process.env.NODE_ENV;
 
 export const set = (res: Response, token: string) => {
   const isProduction = NODE_ENV === "production";
-  res.cookie("token", token, {
+  res.cookie("access_token", token, {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    path: "/",
+  });
+};
+
+export const clear = (res: Response) => {
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+    sameSite: NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   });
 };

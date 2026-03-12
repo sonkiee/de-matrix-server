@@ -8,8 +8,8 @@ import { protect } from "../../middleware/auth.middleware";
 const router = express.Router();
 const orderController = new OrderController(new OrderService());
 
-// router.get("/", protect, getUserOrders);
-// router.get("/:id/", protect, getUserOrderById);
+router.get("/", protect, orderController.listMyOrders);
+router.get("/:id/", protect, orderController.getMyOrder);
 router.post("/", protect, orderController.newOrder);
 
 export default router;

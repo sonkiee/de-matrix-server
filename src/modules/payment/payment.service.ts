@@ -1,6 +1,12 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { db } from "../../db";
-import { payments, orders, orderItems, products } from "../../db/schema"; // adjust to your schema names
+import {
+  payments,
+  orders,
+  orderItems,
+  products,
+  productVariants,
+} from "../../db/schema"; // adjust to your schema names
 import { PaystackClient } from "./paystac.client";
 import { isUUID } from "../../utils/is-uuid";
 
@@ -74,7 +80,11 @@ export class PaymentService {
         metadata: { orderId: order.id },
       });
 
-      return { authorizationUrl: ps.data.authorization_url, reference };
+      return {
+        authorizationUrl: ps.data.authorization_url,
+        reference,
+        access_code: ps.data.access_code,
+      };
     });
   };
 
@@ -96,7 +106,21 @@ export class PaymentService {
     // Optional: validate amount/currency here before marking paid
     // e.g. compare verify.data.amount (kobo) with order.totalAmount*100
 
-    return await this.handleSuccessfulPayment(reference);
+    const finalize = await this.handleSuccessfulPayment(
+      reference,
+      verify.data.amount,
+      verify.data.currency,
+    );
+
+    return {
+      ...finalize,
+      payment: {
+        reference,
+        status: verify.data.status,
+        amountKobo: verify.data.amount,
+        currency: verify.data.currency,
+      },
+    };
   };
 
   private handleSuccessfulPayment = async (
@@ -126,7 +150,7 @@ export class PaymentService {
       }
 
       // Idempotent: if already paid, stop
-      if (payment.status === "paid" && order.status !== "pending_payment") {
+      if (payment.status === "success" && order.status !== "pending_payment") {
         return { alreadyProcessed: true, orderId: order.id };
       }
 
@@ -181,7 +205,7 @@ export class PaymentService {
       // Mark payment paid
       await tx
         .update(payments)
-        .set({ status: "paid", updatedAt: new Date() })
+        .set({ status: "success", updatedAt: new Date() })
         .where(eq(payments.id, payment.id));
 
       // Update order status

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PaymentService } from "./payment.service";
 import { PaystackClient } from "./paystac.client";
+import * as crypto from "crypto";
 
 export class PaymentsController {
   private service: PaymentService;
@@ -30,6 +31,7 @@ export class PaymentsController {
 
   verify = async (req: Request, res: Response) => {
     const reference = String(req.query.reference ?? "");
+    console.log("Verifying payment with reference:", reference);
     if (!reference)
       return res.status(400).json({ message: "Missing reference" });
 
@@ -37,60 +39,67 @@ export class PaymentsController {
     return res.status(200).json({ message: "Payment successful", ...result });
   };
 
-  //   webhook = async (req: Request, res: Response) => {
-  //     // Paystack signature verification: x-paystack-signature = HMAC-SHA512(body, secret)
-  //     const secret = process.env.PAYSTACK_SECRET_KEY;
-  //     if (!secret)
-  //       return res.status(500).json({ message: "Server misconfigured" });
+  webhook = async (req: Request, res: Response) => {
+    console.log("Received webhook", {
+      headers: req.headers,
+      body: req.body,
+    });
+    // Paystack signature verification: x-paystack-signature = HMAC-SHA512(body, secret)
+    const secret = process.env.PAYSTACK_SECRET_KEY;
+    const signature = req.headers["x-paystack-signature"] as string | undefined;
 
-  //     const signature = req.headers["x-paystack-signature"] as string | undefined;
-  //     if (!signature)
-  //       return res.status(400).json({ message: "Missing signature" });
+    if (!secret)
+      return res.status(500).json({ message: "Server misconfigured" });
 
-  //     // NOTE: req.body must be raw for signature verification.
-  //     // In Express, use:
-  //     // app.post("/webhook", express.raw({ type: "application/json" }), controller.webhook)
-  //     // and then JSON.parse(req.body.toString()) below.
-  //     const rawBody = (req as any).body as Buffer;
-  //     if (!Buffer.isBuffer(rawBody)) {
-  //       return res.status(500).json({
-  //         message:
-  //           "Webhook raw body not available. Use express.raw({type:'application/json'}) on this route.",
-  //       });
-  //     }
+    if (!signature)
+      return res.status(400).json({ message: "Missing signature" });
 
-  //     const computed = crypto
-  //       .createHmac("sha512", secret)
-  //       .update(rawBody)
-  //       .digest("hex");
+    // NOTE: req.body must be raw for signature verification.
+    // In Express, use:
+    // app.post("/webhook", express.raw({ type: "application/json" }), controller.webhook)
+    // and then JSON.parse(req.body.toString()) below.
+    const rawBody = (req as any).body as Buffer;
+    if (!Buffer.isBuffer(rawBody)) {
+      return res.status(500).json({
+        message: "Expected raw Buffer body",
+      });
+    }
 
-  //     if (computed !== signature) {
-  //       return res.status(401).json({ message: "Invalid signature" });
-  //     }
+    const computed = crypto
+      .createHmac("sha512", secret)
+      .update(rawBody)
+      .digest("hex");
 
-  //     const event = JSON.parse(rawBody.toString("utf8"));
+    if (computed !== signature) {
+      return res.status(401).json({ message: "Invalid signature" });
+    }
 
-  //     try {
-  //       if (event?.event === "charge.success") {
-  //         const reference = event?.data?.reference;
-  //         if (!reference)
-  //           return res.status(400).json({ message: "Missing reference" });
+    const event = JSON.parse(rawBody.toString("utf8"));
 
-  //         // Store raw webhook payload if you want:
-  //         await db
-  //           .update(payments)
-  //           .set({ rawWebhookData: event, updatedAt: new Date() })
-  //           .where(eq(payments.reference, reference));
+    try {
+      const eventType = event?.event;
+      if (eventType === "charge.success") {
+        const reference = event?.data?.reference;
+        const amount = event?.data?.amount;
+        const currency = event?.data?.currency;
 
-  //         await this.paymentService.handleSuccessfulPayment(reference);
+        if (!reference || !amount || !currency)
+          return res.status(400).send("Missing reference");
 
-  //         return res.status(200).json({ message: "ok" });
-  //       }
+        // Store raw webhook payload if you want:
 
-  //       return res.status(200).json({ message: "ignored" });
-  //     } catch (e: any) {
-  //       const code = e?.statusCode ?? 500;
-  //       return res.status(code).json({ message: e?.message ?? "Server error" });
-  //     }
-  //   };
+        await this.service["handleSuccessfulPayment"](
+          reference,
+          amount,
+          currency,
+        );
+
+        return res.status(200).json({ message: "ok" });
+      }
+
+      return res.status(200).send("ignored");
+    } catch (e: any) {
+      return res.status(500).send(e?.message ?? "Webhook error");
+    }
+  };
 }

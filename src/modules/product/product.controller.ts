@@ -1,6 +1,7 @@
 // products.controller.ts
 import { Request, Response } from "express";
 import { ProductsService } from "./product.service";
+import { ProductParams } from "../../types";
 
 export class ProductsController {
   constructor(private service: ProductsService) {}
@@ -40,8 +41,12 @@ export class ProductsController {
   //   };
 
   list = async (req: Request, res: Response) => {
-    const filter = String(req.query.filter ?? "");
-    const rows = await this.service.list(filter);
+    const filters = req.query as ProductParams;
+
+    if (filters.storage) filters.storage = Number(filters.storage);
+
+    console.log("Filter:", filters);
+    const rows = await this.service.list(filters);
     if (!rows.length)
       return res.status(404).json({ message: "No products found" });
 

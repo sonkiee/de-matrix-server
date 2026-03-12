@@ -18,7 +18,7 @@ export class AddressController {
       const body = req.body as CreateAddressInput;
 
       // Minimal validation (you can replace with Zod later)
-      if (!body?.addressLine || !body?.city || !body?.state || !body?.zip) {
+      if (!body?.address || !body?.city || !body?.state || !body?.zip) {
         res.status(400).json({ message: "Please enter all required fields" });
         return;
       }

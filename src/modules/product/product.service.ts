@@ -1,12 +1,26 @@
 // products.service.ts
-import { and, eq, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  exists,
+  gte,
+  ilike,
+  inArray,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "../../db";
 import {
   categories,
   products,
   productImages,
   productVariants,
+  brands,
 } from "../../db/schema";
+import { ListParams, ProductParams } from "../../types";
 
 const isUUID = (v: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -156,19 +170,148 @@ export class ProductsService {
     });
   };
 
-  list = async (filter?: string) => {
-    const where =
-      filter === "featured"
-        ? eq(products.isFeatured, true)
-        : filter === "bestseller"
-          ? eq(products.isBestSeller, true)
-          : undefined;
+  list = async (params?: ProductParams) => {
+    const {
+      search,
+      categoryId,
+      brandId,
+      minPrice,
+      maxPrice,
+      inStock,
+      featured,
+      bestSeller,
+      newArrival,
+      sort,
+      page = 1,
+      limit = 20,
+      category,
+      storage,
+    } = params || {};
 
-    return await db.query.products.findMany({
-      where,
-      orderBy: (t, { desc }) => [desc(t.createdAt)],
-      with: { images: true, variants: true },
+    const conditions = [];
+
+    conditions.push(eq(products.isActive, true));
+
+    if (search) {
+      conditions.push(
+        or(
+          ilike(products.title, `%${search}%`),
+          ilike(products.description, `%${search}%`),
+        ),
+      );
+    }
+
+    if (categoryId) {
+      conditions.push(eq(products.categoryId, categoryId));
+    }
+
+    if (brandId) {
+      conditions.push(eq(products.brandId, brandId));
+    }
+
+    if (minPrice !== undefined) {
+      conditions.push(gte(products.maxPrice, String(minPrice)));
+    }
+    if (maxPrice !== undefined) {
+      conditions.push(lte(products.minPrice, String(maxPrice)));
+    }
+
+    if (inStock !== undefined) {
+      conditions.push(eq(products.inStock, !!inStock));
+    }
+    if (featured !== undefined) {
+      conditions.push(eq(products.isFeatured, !!featured));
+    }
+    if (bestSeller !== undefined) {
+      conditions.push(eq(products.isBestSeller, !!bestSeller));
+    }
+    if (newArrival !== undefined) {
+      conditions.push(eq(products.isNewArrival, !!newArrival));
+    }
+
+    let orderBy;
+
+    switch (sort) {
+      case "price_asc":
+        orderBy = asc(products.minPrice);
+        break;
+      case "price_desc":
+        orderBy = desc(products.maxPrice);
+        break;
+      case "newest":
+      default:
+        orderBy = desc(products.createdAt);
+    }
+
+    const offset = (page - 1) * limit;
+
+    // const query = db
+    //   .select({
+    //     product: products,
+    //     category: categories,
+    //     variant: productVariants,
+    //   })
+    //   .from(products)
+    //   .innerJoin(categories, eq(categories.id, products.categoryId))
+    //   .innerJoin(productVariants, eq(productVariants.productId, products.id))
+    //   .where(and(...conditions))
+    //   .orderBy(desc(products.createdAt))
+    //   .limit(limit)
+    //   .offset(offset);
+
+    // return query;
+    if (category) {
+      conditions.push(
+        inArray(
+          products.categoryId,
+          sql`(SELECT id FROM categories WHERE name = ${category})`,
+        ),
+      );
+      // const rows = await query;
+      // return rows.filter((row) => row.category?.name === category);
+    }
+
+    if (storage) {
+      conditions.push(
+        inArray(
+          products.id,
+          db
+            .select({ productId: productVariants.productId }) // correct column
+            .from(productVariants)
+            .where(
+              and(
+                eq(productVariants.storage, storage),
+                eq(productVariants.isActive, true),
+              ),
+            ),
+        ),
+      );
+    }
+
+    const query = db.query.products.findMany({
+      where: and(...conditions),
+      orderBy,
+      limit,
+      offset,
+      with: {
+        brand: {
+          columns: { id: true, name: true },
+        },
+        variants: storage
+          ? {
+              where: and(
+                eq(productVariants.storage, storage),
+                eq(productVariants.isActive, true),
+              ),
+            }
+          : true,
+        category: {
+          columns: { id: true, name: true },
+        },
+      },
     });
+
+    return query;
   };
 
   getById = async (id: string) => {
@@ -177,7 +320,16 @@ export class ProductsService {
 
     const product = await db.query.products.findFirst({
       where: eq(products.id, id),
-      with: { images: true, variants: true, category: true, brand: true },
+      with: {
+        images: true,
+        variants: true,
+        category: {
+          columns: { id: true, name: true },
+        },
+        brand: {
+          columns: { id: true, name: true },
+        },
+      },
     });
 
     if (!product)

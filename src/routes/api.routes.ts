@@ -2,7 +2,7 @@ import { Router } from "express";
 import user from "../modules/user/user.routes";
 import product from "../modules/product/product.routes";
 import category from "../modules/category/category.routes";
-// import payment from "./payment.routes";
+import payment from "../modules/payment/payment.routes";
 import order from "../modules/order/order.routes";
 // import admin from "./admin.routes";
 import auth from "../modules/auth/auth.routes";
@@ -17,7 +17,7 @@ router.use("/auth", auth); // Authentication middleware
 router.use("/user", user);
 router.use("/brands", brand);
 router.use("/products", product);
-// router.use("/order/payment", payment);
+router.use("/order/payment", payment);
 router.use("/orders", order);
 router.use("/categories", category);
 // router.use("/banners", banner);

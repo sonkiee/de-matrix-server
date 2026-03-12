@@ -3,10 +3,11 @@ import { pgEnum } from "drizzle-orm/pg-core";
 export const userRoleEnum = pgEnum("user_role", ["customer", "admin"]);
 
 export const categoryNameEnum = pgEnum("category_name", [
-  "smartphones",
-  "parts",
-  "tablets",
+  "iphone",
+  "samsung",
   "accessories",
+  "tablet",
+  "smartphones",
 ]);
 
 export const productConditionEnum = pgEnum("product_condition", [
@@ -42,4 +43,9 @@ export const cartStatusEnum = pgEnum("cart_status", [
 export const addressLabelEnum = pgEnum("address_label", [
   "primary",
   "secondary",
+]);
+
+export const deliveryMethodEnum = pgEnum("delivery_method", [
+  "delivery",
+  "pickup",
 ]);

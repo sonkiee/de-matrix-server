@@ -1,19 +1,11 @@
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
 import { verify } from "../utils/jwt";
 import { db } from "../db";
-import { Request, User } from "../types/request";
+import { User } from "../types";
 
 function getToken(req: any): string | undefined {
-  const cookieToken = req.cookies?.token;
-  if (cookieToken) return cookieToken;
-
-  const authHeader = req.headers?.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    return authHeader.split(" ")[1];
-  }
-
-  return undefined;
+  return req.cookies?.access_token;
 }
 
 export const protect = async (
@@ -39,23 +31,15 @@ export const protect = async (
       return;
     }
 
-    const authUser: User = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      role: user.role,
-      isVerified: user.isVerified,
-    };
-    req.user = authUser;
-    next();
-    return;
+    req.userId = user.id;
+    req.user = user;
+    return next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid or expired token" });
-    return;
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
 export const admin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user && req.user.role === "admin") return next();
-  res.status(403).json({ message: "Admin access required" });
+  return res.status(403).json({ message: "Admin access required" });
 };

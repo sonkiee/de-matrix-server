@@ -8,5 +8,14 @@ export type NewAddress = typeof addresses.$inferInsert;
 // what API accepts from client (no userId, no id, no timestamps)
 export type CreateAddressInput = Pick<
   NewAddress,
-  "label" | "addressLine" | "city" | "state" | "zip" | "country" | "isDefault"
+  | "label"
+  | "firstName"
+  | "lastName"
+  | "phone"
+  | "address"
+  | "city"
+  | "state"
+  | "zip"
+  | "country"
+  | "isDefault"
 >;

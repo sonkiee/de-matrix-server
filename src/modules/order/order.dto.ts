@@ -1,16 +1,27 @@
 // order.dto.ts
-import type { NewOrder } from "../../db/schema/order.schema";
 
-export type ShippingAddressSnapshot = NonNullable<
-  NewOrder["shippingAddressSnapshot"]
->;
+export type AddressLabel = "primary" | "secondary";
+
+export type ShippingAddressSnapshot = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip?: string;
+  country: string;
+  label?: AddressLabel;
+};
 
 export type CreateOrderInput = {
   items: Array<{
     variantId: string;
     qty: number;
   }>;
-  shippingAddress: ShippingAddressSnapshot;
+  addressId?: string; // existing address ID to snapshot at time of order
+  shippingAddress?: ShippingAddressSnapshot & { saveToAddressBook?: boolean };
+  deliveryMethod?: "delivery" | "pickup";
   shippingFee?: string | number; // optional
   discountTotal?: string | number; // optional
 };

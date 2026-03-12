@@ -7,7 +7,13 @@ const router = express.Router();
 const paymentController = new PaymentsController();
 
 router.post("/init", protect, paymentController.initialize);
-router.get("/verify", protect, paymentController.verify);
-// router.post("/webhook", paymentWebhook);
+router.get("/verify", paymentController.verify);
+// router.post(
+//   "/webhook",
+//   express.raw({
+//     type: "application/json",
+//   }),
+//   paymentController.webhook,
+// );
 
 export default router;

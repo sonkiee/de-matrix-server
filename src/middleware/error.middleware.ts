@@ -18,6 +18,8 @@ export const notFoundHandler = (req: Request, res: Response) => {
   });
 };
 
+const isHttpError = (err: any) => typeof err?.statusCode === "number";
+
 export const errorHandler = (
   err: any,
   req: Request,
@@ -40,25 +42,40 @@ export const errorHandler = (
     });
   }
 
-  const statusCode = res.statusCode < 400 ? 500 : res.statusCode;
+  // decide status
+  const statusCode = isHttpError(err)
+    ? err.statusCode
+    : res.statusCode >= 400
+      ? res.statusCode
+      : 500;
+
+  // request id for tracing
+  const requestId = crypto.randomUUID();
 
   const meta = {
+    statusCode,
     message: err?.message,
+    cause: err?.cause,
     method: req.method,
     path: req.originalUrl,
     // stack: err?.stack,
+    detail: err?.detail,
+    constraint: err?.constraint,
+    table: err?.table,
   };
 
   // Always log full details on the server
   logger.error(`Unhandled error:\n${JSON.stringify(meta, null, 2)}`);
 
-  const isProduction = process.env.NODE_ENV === "production";
+  // client-safe message
+  const clientMessage =
+    statusCode >= 500
+      ? "Internal server error"
+      : (err?.message ?? "Request failed");
 
   // Client response
   return res.status(statusCode).json({
     method: req.method,
-    message: isProduction
-      ? "Internal server error"
-      : err?.message || "Internal server error",
+    message: clientMessage,
   });
 };

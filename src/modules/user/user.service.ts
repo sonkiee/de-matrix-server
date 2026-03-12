@@ -16,4 +16,22 @@ export class UserService {
       where: eq(users.email, email),
     });
   };
+
+  updateProfile = async (
+    id: string,
+    data: Partial<{ firstName: string; lastName: string; phone: string }>,
+  ) => {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = {
+      ...user,
+      ...data,
+    };
+
+    await db.update(users).set(updatedUser).where(eq(users.id, id));
+    return updatedUser;
+  };
 }

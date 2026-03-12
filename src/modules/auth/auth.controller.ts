@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../user/user.service";
 import { sign } from "../../utils/jwt";
-import { set } from "../../utils/http-only-cookies";
+import { clear, set } from "../../utils/http-only-cookies";
 import bcrypt from "bcryptjs";
 import { db } from "../../db";
 import { users } from "../../db/schema";
@@ -9,20 +9,21 @@ import { users } from "../../db/schema";
 export class AuthController {
   constructor(private userService: UserService) {}
 
-  signup = async (req: Request, res: Response, next: NextFunction) => {
-    const { fullName, email, password } = req.body;
+  signup = async (req: Request, res: Response) => {
+    const { firstName, lastName, email, password } = req.body;
 
     const existing = await this.userService.findByEmail(email);
 
     if (existing)
-      return res.status(409).json({ message: "User already exist" });
+      return res.status(409).json({ message: "User with email already exist" });
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const [user] = await db
       .insert(users)
       .values({
-        fullName,
+        firstName: firstName,
+        lastName: lastName,
         email: email.toLowerCase().trim(),
         password: hashedPassword,
       })
@@ -54,5 +55,25 @@ export class AuthController {
     return;
 
     // Continue with generating token or other login success logic
+  };
+
+  me = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId as string;
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      userId: user.id,
+      role: user.role,
+    });
+  };
+
+  logout = async (req: Request, res: Response) => {
+    clear(res);
+    res.status(200).json({ message: "Logout successful" });
   };
 }

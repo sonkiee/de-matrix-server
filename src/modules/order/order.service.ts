@@ -2,9 +2,10 @@
 import { db } from "../../db";
 import { orders, orderItems } from "../../db/schema/order.schema";
 import { productVariants } from "../../db/schema/product-variant.schema";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import type { Order } from "../../db/schema/order.schema";
-import type { CreateOrderInput } from "./order.dto";
+import type { CreateOrderInput, ShippingAddressSnapshot } from "./order.dto";
+import { addresses } from "../../db/schema";
 
 const toMoneyString = (n: number) => n.toFixed(2);
 
@@ -107,6 +108,71 @@ export class OrderService {
     const orderNumber = generateOrderNumber();
 
     return await db.transaction(async (tx) => {
+      let addressIdToSave: string | null = null;
+      let snapshot: ShippingAddressSnapshot;
+
+      if (input.addressId) {
+        const addr = await tx.query.addresses.findFirst({
+          where: and(
+            eq(addresses.id, input.addressId),
+            eq(addresses.userId, userId),
+          ),
+        });
+
+        if (!addr) throw new Error("Address not found");
+
+        snapshot = {
+          firstName: addr.firstName,
+          lastName: addr.lastName,
+          phone: addr.phone,
+          address: addr.address as string,
+          city: addr.city as string,
+          state: addr.state as string,
+          zip: addr.zip ?? undefined,
+          country: addr.country ?? "Nigeria",
+          label: addr.label,
+        };
+
+        addressIdToSave = addr.id;
+      } else if (input.shippingAddress) {
+        const a = input.shippingAddress;
+        snapshot = {
+          firstName: a.firstName,
+          lastName: a.lastName,
+          phone: a.phone,
+          address: a.address,
+          city: a.city,
+          state: a.state,
+          zip: a.zip,
+          country: a.country,
+          label: a.label,
+        };
+
+        if (a.saveToAddressBook) {
+          const [createdAddress] = await tx
+            .insert(addresses)
+            .values({
+              userId,
+              label: snapshot.label ?? "primary",
+              firstName: snapshot.firstName,
+              lastName: snapshot.lastName,
+              phone: snapshot.phone,
+              address: snapshot.address,
+              city: snapshot.city,
+              state: snapshot.state,
+              zip: snapshot.zip,
+              country: snapshot.country,
+              isDefault: false, // or set true if user wants it default
+            })
+            .returning({ id: addresses.id });
+
+          if (!createdAddress) throw new Error("Failed to save address");
+          addressIdToSave = createdAddress.id;
+        }
+      } else {
+        throw new Error("Either addressId or shippingAddress must be provided");
+      }
+
       const [createdOrder] = await tx
         .insert(orders)
         .values({
@@ -117,7 +183,9 @@ export class OrderService {
           shippingFee: toMoneyString(shippingFeeNum),
           discountTotal: toMoneyString(discountNum),
           total: toMoneyString(totalNum),
-          shippingAddressSnapshot: input.shippingAddress,
+          shippingAddressSnapshot: snapshot,
+          deliveryMethod: input.deliveryMethod ?? "pickup",
+          addressId: addressIdToSave,
         })
         .returning();
 

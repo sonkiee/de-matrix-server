@@ -1,6 +1,5 @@
 // order.controller.ts
-import type { Response, NextFunction } from "express";
-import type { Request } from "../../types/request"; // your custom request with req.user
+import type { Response, NextFunction, Request } from "express"; // your custom request with req.user
 import { OrderService } from "./order.service";
 import type { CreateOrderInput } from "./order.dto";
 
@@ -9,7 +8,7 @@ type IdParams = { id: string };
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  getOrders = async (_req: Request, res: Response, next: NextFunction) => {
+  listOrders = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const orders = await this.orderService.listAll();
       if (orders.length === 0) {
@@ -26,7 +25,7 @@ export class OrderController {
     }
   };
 
-  getOrderById = async (
+  getOrder = async (
     req: Request<IdParams>,
     res: Response,
     next: NextFunction,
@@ -48,7 +47,7 @@ export class OrderController {
     }
   };
 
-  getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
+  listMyOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
       if (!userId) {
@@ -68,7 +67,7 @@ export class OrderController {
     }
   };
 
-  getMyOrderById = async (
+  getMyOrder = async (
     req: Request<IdParams>,
     res: Response,
     next: NextFunction,

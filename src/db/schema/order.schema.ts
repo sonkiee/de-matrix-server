@@ -10,10 +10,11 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { orderStatusEnum } from "./enum";
+import { orderStatusEnum, deliveryMethodEnum } from "./enum";
 import { users } from "./user.schema";
 import { productVariants } from "./product-variant.schema";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { addresses } from "./address.schema";
 
 export const orders = pgTable(
   "orders",
@@ -38,15 +39,28 @@ export const orders = pgTable(
       .default("0"),
     total: numeric("total", { precision: 12, scale: 2 }).notNull().default("0"),
 
+    addressId: uuid("address_id").references(() => addresses.id, {
+      onDelete: "set null",
+    }),
+
     // keep the actual address used at checkout (snapshot)
-    shippingAddressSnapshot: jsonb("shipping_address_snapshot").$type<{
-      addressLine?: string;
-      city?: string;
-      state?: string;
-      zip?: string;
-      country?: string;
-      label?: string;
-    }>(),
+    shippingAddressSnapshot: jsonb("shipping_address_snapshot")
+      .$type<{
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        address?: string;
+        city?: string;
+        state?: string;
+        zip?: string;
+        country?: string;
+        label?: string;
+      }>()
+      .notNull(),
+
+    deliveryMethod: deliveryMethodEnum("delivery_method")
+      .notNull()
+      .default("pickup"),
 
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
