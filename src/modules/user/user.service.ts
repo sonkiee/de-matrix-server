@@ -5,6 +5,12 @@ import { users } from "../../db/schema";
 export class UserService {
   constructor() {}
 
+  list = async () => {
+    return await db.query.users.findMany({
+      orderBy: (u, { desc }) => [desc(u.createdAt)],
+    });
+  };
+
   findById = async (id: string) => {
     return await db.query.users.findFirst({
       where: eq(users.id, id),

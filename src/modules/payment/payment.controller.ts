@@ -12,6 +12,11 @@ export class PaymentsController {
     this.service = new PaymentService(new PaystackClient(secret));
   }
 
+  list = async (req: Request, res: Response) => {
+    const payments = await this.service.list();
+    return res.status(200).json({ data: payments });
+  };
+
   initialize = async (req: Request, res: Response) => {
     const user = req.user;
     const { orderId } = req.body as { orderId?: string };

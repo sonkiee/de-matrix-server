@@ -18,6 +18,7 @@ export class OrderService {
   listAll = async (): Promise<Order[]> => {
     return db.query.orders.findMany({
       orderBy: (o, { desc }) => [desc(o.createdAt)],
+      with: { user: true },
     });
   };
 

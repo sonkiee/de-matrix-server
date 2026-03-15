@@ -4,6 +4,11 @@ import { UserService } from "./user.service";
 export class UserController {
   constructor(private userService: UserService) {}
 
+  list = async (req: Request, res: Response) => {
+    const users = await this.userService.list();
+    return res.status(200).json({ data: users });
+  };
+
   getProfile = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     console.log("User ID from token:", userId);

@@ -15,6 +15,15 @@ const toKobo = (naira: string | number) => Math.round(Number(naira) * 100);
 export class PaymentService {
   constructor(private paystack: PaystackClient) {}
 
+  list = async () => {
+    return db.query.payments.findMany({
+      orderBy: (p, { desc }) => [desc(p.createdAt)],
+      with: {
+        user: true,
+      },
+    });
+  };
+
   private makeReference(orderId: string) {
     return `ord_${orderId}_${Date.now()}`; // stable enough for MVP
   }
