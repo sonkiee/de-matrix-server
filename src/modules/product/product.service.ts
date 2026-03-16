@@ -19,6 +19,9 @@ import {
   productImages,
   productVariants,
   brands,
+  Product,
+  NewProduct,
+  NewProductVariant,
 } from "../../db/schema";
 import { ListParams, ProductParams } from "../../types";
 
@@ -66,10 +69,17 @@ export type CreateProductInput = {
   isNewArrival?: boolean;
 };
 
+type NewProductInput = Omit<NewProduct, "id" | "createdAt" | "updatedAt"> & {
+  variants: Omit<
+    NewProductVariant,
+    "id" | "productId" | "createdAt" | "updatedAt"
+  >[];
+};
+
 export type UpdateProductInput = Partial<CreateProductInput>;
 
 export class ProductsService {
-  create = async (input: CreateProductInput, imageUrls: string[]) => {
+  create = async (input: NewProductInput, imageUrls: string[]) => {
     if (!input.title?.trim())
       throw Object.assign(new Error("Missing title"), { statusCode: 400 });
     if (!isUUID(input.categoryId))
@@ -77,19 +87,10 @@ export class ProductsService {
     if (input.brandId && !isUUID(input.brandId))
       throw Object.assign(new Error("Invalid brandId"), { statusCode: 400 });
 
-    if (!imageUrls?.length)
+    if (!imageUrls.length)
       throw Object.assign(new Error("Upload at least one image"), {
         statusCode: 400,
       });
-
-    if (!Number.isFinite(input.price) || input.price <= 0)
-      throw Object.assign(new Error("Invalid price"), { statusCode: 400 });
-
-    if (!Number.isFinite(input.stock) || input.stock < 0)
-      throw Object.assign(new Error("Invalid stock"), { statusCode: 400 });
-
-    const colors = parseList(input.colors);
-    const sizes = parseList(input.sizes);
 
     return await db.transaction(async (tx) => {
       const cat = await tx.query.categories.findFirst({
@@ -111,6 +112,8 @@ export class ProductsService {
         slug = `${baseSlug}-${Math.floor(Math.random() * 10_000)}`;
       }
 
+      const prices = input.variants.map((v) => Number(v.price ?? 0));
+
       const [p] = await tx
         .insert(products)
         .values({
@@ -125,9 +128,9 @@ export class ProductsService {
           isBestSeller: !!input.isBestSeller,
           isNewArrival: !!input.isNewArrival,
 
-          minPrice: String(input.price),
-          maxPrice: String(input.price),
-          inStock: input.stock > 0,
+          minPrice: String(Math.min(...prices)),
+          maxPrice: String(Math.max(...prices)),
+          inStock: input.variants.some((v) => (v.stockQty ?? 0) > 0),
 
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -144,23 +147,17 @@ export class ProductsService {
         })),
       );
 
-      const combos =
-        colors.length || sizes.length
-          ? (colors.length ? colors : [null]).flatMap((c) =>
-              (sizes.length ? sizes : [null]).map((s) => ({
-                color: c,
-                size: s,
-              })),
-            )
-          : [{ color: null, size: null }];
-
       await tx.insert(productVariants).values(
-        combos.map((v) => ({
+        input.variants.map((v) => ({
           productId: p.id,
-          price: String(input.price),
-          stock: input.stock,
-          color: v.color,
-          size: v.size,
+          sku: v.sku ?? null,
+          condition: v.condition,
+          storage: v.storage ?? null,
+          color: v.color ?? null,
+          price: v.price,
+          compareAtPrice: v.compareAtPrice ?? null,
+          stockQty: v.stockQty,
+          isActive: v.isActive ?? true,
           createdAt: new Date(),
           updatedAt: new Date(),
         })),
@@ -297,6 +294,7 @@ export class ProductsService {
         brand: {
           columns: { id: true, name: true },
         },
+        images: true,
         variants: storage
           ? {
               where: and(

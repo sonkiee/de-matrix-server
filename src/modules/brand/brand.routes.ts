@@ -6,6 +6,6 @@ const router = Router();
 
 const brandController = new BrandController(new BrandService());
 
-router.get("/", brandController.getBrands);
+router.get("/", brandController.list);
 
 export default router;

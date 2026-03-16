@@ -39,23 +39,10 @@ export class CategoryController {
     }
   };
 
-  getCategories = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = await this.categoryService.list();
+  list = async (req: Request, res: Response) => {
+    const data = await this.categoryService.list();
 
-      if (data.length === 0) {
-        res.status(404).json({ message: "No categories found" });
-        return;
-      }
-
-      res.status(200).json({
-        success: true,
-        message: "Categories retrieved successfully",
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
+    res.status(200).json(data);
   };
 
   getCategoryById = async (

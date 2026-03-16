@@ -12,6 +12,10 @@ export class AuthController {
   signup = async (req: Request, res: Response) => {
     const { firstName, lastName, email, password } = req.body;
 
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     const existing = await this.userService.findByEmail(email);
 
     if (existing)
@@ -19,15 +23,12 @@ export class AuthController {
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    const [user] = await db
-      .insert(users)
-      .values({
-        firstName: firstName,
-        lastName: lastName,
-        email: email.toLowerCase().trim(),
-        password: hashedPassword,
-      })
-      .returning();
+    const user = await this.userService.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+    });
 
     const token = sign(user.id);
     set(res, token);

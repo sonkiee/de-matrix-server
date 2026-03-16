@@ -2,43 +2,49 @@
 import { Request, Response } from "express";
 import { ProductsService } from "./product.service";
 import { ProductParams } from "../../types";
+import { uploadImage } from "../../utils/cloudinary";
+import { NewProduct } from "../../db/schema";
 
 export class ProductsController {
   constructor(private service: ProductsService) {}
 
-  //   create = async (req: AuthRequest, res: Response) => {
-  //     try {
-  //       const files = req.files as Express.Multer.File[] | undefined;
-  //       if (!files?.length)
-  //         return res.status(400).json({ message: "Upload at least one image" });
+  create = async (req: Request, res: Response) => {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files || !files.length)
+      return res.status(400).json({ message: "Upload at least one image" });
 
-  //       const imageUrls = await Promise.all(files.map((f) => uploadToR2(f)));
+    const imageUrls = await Promise.all(
+      files.map((file, idx) =>
+        uploadImage(file.buffer, `product-${Date.now()}-${idx}`),
+      ),
+    );
 
-  //       const body = req.body as any;
+    const body = JSON.parse(req.body.data ?? "{}") as any;
 
-  //       const input: CreateProductInput = {
-  //         title: String(body.title ?? ""),
-  //         description: body.description ?? null,
-  //         categoryId: String(body.categoryId ?? ""),
-  //         brandId: body.brandId ? String(body.brandId) : null,
-  //         price: Number(body.price),
-  //         stock: Number(body.stock),
-  //         colors: body.colors,
-  //         sizes: body.sizes,
-  //         isFeatured: body.isFeatured === "true" || body.isFeatured === true,
-  //         isBestSeller:
-  //           body.isBestSeller === "true" || body.isBestSeller === true,
-  //         isNewArrival:
-  //           body.isNewArrival === "true" || body.isNewArrival === true,
-  //       };
+    const input = body;
 
-  //       const product = await this.service.create(input, imageUrls);
-  //       return res.status(201).json({ product });
-  //     } catch (e: any) {
-  //       const code = e?.statusCode ?? 500;
-  //       return res.status(code).json({ message: e?.message ?? "Server error" });
-  //     }
-  //   };
+    // const input: CreateProductInput = {
+    //   title: String(body.title ?? ""),
+    //   description: body.description ?? null,
+    //   categoryId: String(body.categoryId ?? ""),
+    //   brandId: body.brandId ? String(body.brandId) : null,
+    //   price: Number(body.price),
+    //   stock: Number(body.stock),
+    //   colors: body.colors,
+    //   sizes: body.sizes,
+    //   isFeatured: body.isFeatured === "true" || body.isFeatured === true,
+    //   isBestSeller:
+    //     body.isBestSeller === "true" || body.isBestSeller === true,
+    //   isNewArrival:
+    //     body.isNewArrival === "true" || body.isNewArrival === true,
+    // };
+
+    console.log("Input from client:", input);
+    console.log("Image URLs:", imageUrls);
+
+    const product = await this.service.create(input, imageUrls);
+    return res.status(201).json({ input, files });
+  };
 
   list = async (req: Request, res: Response) => {
     const filters = req.query as ProductParams;

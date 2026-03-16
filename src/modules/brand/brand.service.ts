@@ -1,12 +1,14 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../db";
-import { brands } from "../../db/schema";
+import { Brand, brands } from "../../db/schema";
 
 export class BrandService {
   constructor() {}
 
-  findAll = async () => {
-    return await db.query.brands.findMany();
+  list = async (): Promise<Brand[]> => {
+    return db.query.brands.findMany({
+      orderBy: (c, { desc }) => [desc(c.createdAt)],
+    });
   };
 
   findBySlug = async (slug: string) => {

@@ -1,9 +1,23 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../db";
-import { users } from "../../db/schema";
+import { NewUser, users } from "../../db/schema";
 
 export class UserService {
   constructor() {}
+
+  create = async (data: NewUser) => {
+    // const [user] = await db.insert(users).values(data).returning();
+    const [user] = await db
+      .insert(users)
+      .values({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email.toLowerCase().trim(),
+        password: data.password,
+      })
+      .returning();
+    return user;
+  };
 
   list = async () => {
     return await db.query.users.findMany({

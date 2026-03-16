@@ -4,27 +4,27 @@ import { BrandService } from "./brand.service";
 export class BrandController {
   constructor(private brandService: BrandService) {}
 
-  getBrand = async (req: Request, res: Response, next: NextFunction) => {
-    const { slug } = req.params;
+  // getBrand = async (req: Request, res: Response, next: NextFunction) => {
+  //   const { slug } = req.params;
 
-    if (!slug) {
-      res.status(400).json({ message: "Slug is required" });
-      return;
-    }
+  //   if (!slug) {
+  //     res.status(400).json({ message: "Slug is required" });
+  //     return;
+  //   }
 
-    const brand = await this.brandService.findBySlug(slug);
+  //   const brand = await this.brandService.findBySlug(slug);
 
-    if (!brand) {
-      res.status(404).json({ message: "Brand not found" });
-      return;
-    }
+  //   if (!brand) {
+  //     res.status(404).json({ message: "Brand not found" });
+  //     return;
+  //   }
 
-    res.json(brand);
-  };
+  //   res.status(200).json(brand);
+  // };
 
-  getBrands = async (_req: Request, res: Response, next: NextFunction) => {
-    const brands = await this.brandService.findAll();
-    res.json(brands);
+  list = async (req: Request, res: Response) => {
+    const brands = await this.brandService.list();
+    res.status(200).json(brands);
   };
 
   createBrand = async (req: Request, res: Response, next: NextFunction) => {

@@ -6,7 +6,7 @@ const router = express.Router();
 
 const categoryController = new CategoryController(new CategoryService());
 
-router.get("/", categoryController.getCategories);
+router.get("/", categoryController.list);
 // router.get("/:id", getCategoryById);
 // router.get("/name/:name", getCategoryByName);
 
