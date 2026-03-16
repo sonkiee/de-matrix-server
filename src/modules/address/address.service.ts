@@ -1,6 +1,6 @@
 // address.service.ts
 import { db } from "../../db";
-import { addresses } from "../../db/schema/address.schema";
+import { addresses, NewAddress } from "../../db/schema/address.schema";
 import { and, eq } from "drizzle-orm";
 import type { Address } from "./address.dto";
 import type { CreateAddressInput } from "./address.dto";
@@ -15,7 +15,7 @@ export class AddressService {
 
   createForUser = async (
     userId: string,
-    input: CreateAddressInput,
+    input: NewAddress,
   ): Promise<Address> => {
     // If setting this new address as default, unset others
     if (input.isDefault) {
@@ -30,7 +30,12 @@ export class AddressService {
       .values({
         userId,
         label: input.label ?? "primary",
-        addressLine: input.addressLine,
+
+        firstName: input.firstName,
+        lastName: input.lastName,
+        phone: input.phone,
+
+        address: input.address,
         city: input.city,
         state: input.state,
         zip: input.zip,

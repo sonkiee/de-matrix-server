@@ -1,11 +1,11 @@
-export type User = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: "customer" | "admin";
-  isVerified: boolean;
-};
+// export type User = {
+//   id: string;
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   role: "customer" | "admin";
+//   isVerified: boolean;
+// };
 
 type SortKey = "newest" | "price_asc" | "price_desc";
 

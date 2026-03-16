@@ -9,7 +9,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { addressLabelEnum } from "./enum";
 import { users } from "./user.schema";
-import { Infer } from "zod";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const addresses = pgTable(

@@ -1,8 +1,6 @@
 import { Response, NextFunction, Request } from "express";
-import jwt from "jsonwebtoken";
 import { verify } from "../utils/jwt";
 import { db } from "../db";
-import { User } from "../types";
 
 function getToken(req: any): string | undefined {
   return req.cookies?.access_token;

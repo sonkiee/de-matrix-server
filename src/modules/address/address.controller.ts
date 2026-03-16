@@ -1,8 +1,8 @@
 // address.controller.ts
-import type { Response, NextFunction } from "express";
-import type { Request } from "../../types/request"; // your custom req with req.user
+import type { Response, NextFunction, Request } from "express"; // your custom req with req.user
 import { AddressService } from "./address.service";
 import type { CreateAddressInput } from "./address.dto";
+import { NewAddress } from "../../db/schema";
 
 export class AddressController {
   constructor(private addressService: AddressService) {}
@@ -15,7 +15,7 @@ export class AddressController {
         return;
       }
 
-      const body = req.body as CreateAddressInput;
+      const body = req.body as NewAddress;
 
       // Minimal validation (you can replace with Zod later)
       if (!body?.address || !body?.city || !body?.state || !body?.zip) {
