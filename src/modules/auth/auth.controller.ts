@@ -30,7 +30,7 @@ export class AuthController {
       password: hashedPassword,
     });
 
-    const token = sign(user.id);
+    const token = sign(user);
     cookie.set(res, token);
     return res.status(201).json({ message: "Registration successful" });
   };
@@ -50,7 +50,7 @@ export class AuthController {
       res.status(401).json({ message: "Invalid email or password" });
       return;
     }
-    const token = sign(user.id);
+    const token = sign(user);
     cookie.set(res, token);
     res.json({ message: "Login successful" });
     return;

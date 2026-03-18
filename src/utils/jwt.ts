@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
+import { User } from "../db/schema";
 
-export const sign = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET as string, {
+export const sign = (payload: User) => {
+  return jwt.sign(payload, process.env.JWT_SECRET as string, {
     expiresIn: "7d",
   });
 };
