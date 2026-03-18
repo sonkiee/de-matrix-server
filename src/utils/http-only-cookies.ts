@@ -12,7 +12,7 @@ export const set = (res: Response, token: string) => {
     httpOnly: true,
     secure: true, // Always set secure to true for production
     sameSite: "lax", // Always set sameSite to 'none' for production
-    domain: "dappertech.org",
+    domain: ".dappertech.org",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     path: "/",
   });
@@ -23,7 +23,7 @@ export const clear = (res: Response) => {
     httpOnly: true,
     secure: true, // Always set secure to true for production
     sameSite: "lax", // Always set sameSite to 'none' for production
-    domain: "dappertech.org",
+    domain: ".dappertech.org",
     path: "/",
   });
 };

@@ -3,7 +3,7 @@ import { verify } from "../utils/jwt";
 import { db } from "../db";
 
 function getToken(req: any): string | undefined {
-  return req.cookies?.access_token;
+  return req.cookies?.access_token || req.headers?.authorization?.split(" ")[1];
 }
 
 export const protect = async (

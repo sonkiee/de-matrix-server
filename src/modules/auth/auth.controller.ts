@@ -52,7 +52,7 @@ export class AuthController {
     }
     const token = sign(user.id);
     set(res, token);
-    res.json({ message: "Login successful" });
+    res.json({ userId: user.id, role: user.role, token });
     return;
 
     // Continue with generating token or other login success logic
