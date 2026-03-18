@@ -11,7 +11,8 @@ export const set = (res: Response, token: string) => {
   res.cookie("access_token", token, {
     httpOnly: true,
     secure: true, // Always set secure to true for production
-    sameSite: "none", // Always set sameSite to 'none' for production
+    sameSite: "lax", // Always set sameSite to 'none' for production
+    domain: "dappertech.org",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     path: "/",
   });
@@ -21,7 +22,8 @@ export const clear = (res: Response) => {
   res.clearCookie("access_token", {
     httpOnly: true,
     secure: true, // Always set secure to true for production
-    sameSite: "none", // Always set sameSite to 'none' for production
+    sameSite: "lax", // Always set sameSite to 'none' for production
+    domain: "dappertech.org",
     path: "/",
   });
 };

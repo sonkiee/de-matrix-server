@@ -1,10 +1,9 @@
-import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
-  origin.trim()
+  origin.trim(),
 );
 if (!ALLOWED_ORIGINS) {
   throw new Error("Missing ALLOWED_ORIGINS environment variable."); // Handle this error in your production code.
