@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../user/user.service";
 import { sign } from "../../utils/jwt";
-import { clear, set } from "../../utils/http-only-cookies";
+import { cookie } from "../../utils/http-only-cookies";
 import bcrypt from "bcryptjs";
 import { db } from "../../db";
 import { users } from "../../db/schema";
@@ -31,7 +31,7 @@ export class AuthController {
     });
 
     const token = sign(user.id);
-    // set(res, token);
+    cookie.set(res, token);
     return res.status(201).json({ message: "Registration successful" });
   };
 
@@ -51,8 +51,8 @@ export class AuthController {
       return;
     }
     const token = sign(user.id);
-    // set(res, token);
-    res.json({ userId: user.id, role: user.role, token });
+    cookie.set(res, token);
+    res.json({ message: "Login successful" });
     return;
 
     // Continue with generating token or other login success logic
@@ -74,7 +74,7 @@ export class AuthController {
   };
 
   logout = async (req: Request, res: Response) => {
-    clear(res);
+    cookie.clear(res);
     res.status(200).json({ message: "Logout successful" });
   };
 }
