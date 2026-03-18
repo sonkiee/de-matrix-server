@@ -22,6 +22,7 @@ import { PaymentsController } from "./modules/payment/payment.controller";
 dotenv.config();
 
 export const app = express();
+app.set("trust proxy", 1); // if behind a proxy (e.g. Heroku, Render)
 
 const paymentController = new PaymentsController();
 
@@ -45,8 +46,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 setupSwagger(app);
-
-app.set("trust proxy", 1); // if behind a proxy (e.g. Heroku, Render)
 
 app.use(routes);
 
