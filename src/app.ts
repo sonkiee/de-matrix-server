@@ -46,6 +46,8 @@ app.use(express.urlencoded({ extended: true }));
 
 setupSwagger(app);
 
+app.set("trust proxy", 1); // if behind a proxy (e.g. Heroku, Render)
+
 app.use(routes);
 
 app.use(notFoundHandler);
