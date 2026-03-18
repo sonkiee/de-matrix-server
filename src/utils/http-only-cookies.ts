@@ -6,14 +6,9 @@ const isProduction = NODE_ENV === "production";
 
 const options = {
   httpOnly: true,
-  secure: isProduction,
-  sameSite: (isProduction ? "none" : "lax") as
-    | "lax"
-    | "strict"
-    | "none"
-    | boolean
-    | undefined,
-  domain: isProduction ? ".dappertech.org" : undefined,
+  secure: false,
+  sameSite: "none" as const,
+  // domain: isProduction ? ".dappertech.org" : undefined,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
