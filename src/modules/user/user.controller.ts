@@ -35,6 +35,25 @@ export class UserController {
     });
   };
 
+  getUserById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const user = await this.userService.findById(id as string);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      createdAt: user.createdAt,
+    });
+  };
+
   updateProfile = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     console.log("User ID from token:", userId);

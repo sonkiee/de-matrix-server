@@ -24,6 +24,33 @@ export class PaymentService {
     });
   };
 
+  getByReference = async (reference: string) => {
+    return db.query.payments.findFirst({
+      where: eq(payments.reference, reference),
+      with: {
+        user: true,
+      },
+    });
+  };
+
+  getByOrderId = async (orderId: string) => {
+    return db.query.payments.findFirst({
+      where: eq(payments.orderId, orderId),
+      with: {
+        user: true,
+      },
+    });
+  };
+
+  getById = async (id: string) => {
+    return db.query.payments.findFirst({
+      where: eq(payments.id, id),
+      with: {
+        user: true,
+      },
+    });
+  };
+
   private makeReference(orderId: string) {
     return `ord_${orderId}_${Date.now()}`; // stable enough for MVP
   }

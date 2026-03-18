@@ -34,6 +34,18 @@ export class PaymentsController {
     return res.status(200).json({ data });
   };
 
+  getById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const payment = await this.service.getById(id as string);
+
+    if (!payment) {
+      res.status(404).json({ message: "Payment not found" });
+      return;
+    }
+
+    res.status(200).json({ data: payment });
+  };
+
   verify = async (req: Request, res: Response) => {
     const reference = String(req.query.reference ?? "");
     console.log("Verifying payment with reference:", reference);

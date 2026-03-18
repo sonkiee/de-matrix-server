@@ -38,6 +38,10 @@ router.get("/users", userController.list);
 
 router.get("/products", productsController.list);
 
+router.get("/users/:id", userController.getUserById);
+router.get("/payments/:id", paymentController.getById);
+router.get("/orders/:id", orderController.getOrder);
+
 router.post("/products", upload.array("files", 5), productsController.create);
 
 router.get("/brands", brandController.list);

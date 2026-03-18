@@ -25,26 +25,18 @@ export class OrderController {
     }
   };
 
-  getOrder = async (
-    req: Request<IdParams>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { id } = req.params;
-      const order = await this.orderService.findById(id);
-      if (!order) {
-        res.status(404).json({ message: "Order not found" });
-        return;
-      }
-      res.status(200).json({
-        success: true,
-        message: "Order details retrieved successfully",
-        data: order,
-      });
-    } catch (err) {
-      next(err);
+  getOrder = async (req: Request<IdParams>, res: Response) => {
+    const { id } = req.params;
+    const order = await this.orderService.findById(id);
+    if (!order) {
+      res.status(404).json({ message: "Order not found" });
+      return;
     }
+    res.status(200).json({
+      success: true,
+      message: "Order details retrieved successfully",
+      data: order,
+    });
   };
 
   listMyOrders = async (req: Request, res: Response, next: NextFunction) => {
