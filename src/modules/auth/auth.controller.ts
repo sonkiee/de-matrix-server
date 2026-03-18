@@ -31,7 +31,7 @@ export class AuthController {
     });
 
     const token = sign(user.id);
-    set(res, token);
+    // set(res, token);
     return res.status(201).json({ message: "Registration successful" });
   };
 
@@ -51,7 +51,7 @@ export class AuthController {
       return;
     }
     const token = sign(user.id);
-    set(res, token);
+    // set(res, token);
     res.json({ userId: user.id, role: user.role, token });
     return;
 

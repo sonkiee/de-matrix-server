@@ -6,13 +6,14 @@ dotenv.config();
 
 const NODE_ENV = process.env.NODE_ENV;
 
+const isProduction = NODE_ENV === "production";
+
 export const set = (res: Response, token: string) => {
-  const isProduction = NODE_ENV === "production";
   res.cookie("access_token", token, {
     httpOnly: true,
-    secure: true, // Always set secure to true for production
-    sameSite: "lax", // Always set sameSite to 'none' for production
-    domain: ".dappertech.org",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    domain: isProduction ? ".dappertech.org" : undefined,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     path: "/",
   });
@@ -21,9 +22,9 @@ export const set = (res: Response, token: string) => {
 export const clear = (res: Response) => {
   res.clearCookie("access_token", {
     httpOnly: true,
-    secure: true, // Always set secure to true for production
-    sameSite: "lax", // Always set sameSite to 'none' for production
-    domain: ".dappertech.org",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    domain: isProduction ? ".dappertech.org" : undefined,
     path: "/",
   });
 };
