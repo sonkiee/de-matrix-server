@@ -1,6 +1,4 @@
-import dotenv from "dotenv";
-
-dotenv.config();
+import "dotenv/config";
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",").map((origin) =>
   origin.trim(),
@@ -15,7 +13,6 @@ export const corsOptions = {
   allowedHeaders: [
     "Content-Type",
     "Authorization",
-    "Access-Control-Allow-Origin",
     "Origin",
     "X-Requested-With",
   ],
