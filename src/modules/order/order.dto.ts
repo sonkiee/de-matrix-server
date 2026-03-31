@@ -20,7 +20,8 @@ export type CreateOrderInput = {
     qty: number;
   }>;
   addressId?: string; // existing address ID to snapshot at time of order
-  shippingAddress?: ShippingAddressSnapshot & { saveToAddressBook?: boolean };
+  shippingAddress?: ShippingAddressSnapshot;
+  saveToAddressBook?: boolean;
   deliveryMethod?: "delivery" | "pickup";
   shippingFee?: string | number; // optional
   discountTotal?: string | number; // optional

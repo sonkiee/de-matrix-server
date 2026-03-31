@@ -149,7 +149,7 @@ export class OrderService {
           label: a.label,
         };
 
-        if (a.saveToAddressBook) {
+        if (input.saveToAddressBook) {
           const [createdAddress] = await tx
             .insert(addresses)
             .values({
