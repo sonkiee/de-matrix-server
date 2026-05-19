@@ -11,6 +11,7 @@ import { BrandController } from "../brand/brand.controller";
 import { BrandService } from "../brand/brand.service";
 import { CategoryController } from "../category/category.controller";
 import { CategoryService } from "../category/category.service";
+import { AdminController } from "./admin.controller";
 // import { getOrderById, getOrders } from "../controllers/order.controller";
 // import { newCategory } from "../controllers/category.controller";
 // import {
@@ -31,6 +32,7 @@ const productsController = new ProductsController(new ProductsService());
 
 const brandController = new BrandController(new BrandService());
 const categoryController = new CategoryController(new CategoryService());
+const adminController = new AdminController(new UserService());
 
 router.get("/orders", orderController.listOrders);
 router.get("/payments", paymentController.list);
@@ -46,6 +48,8 @@ router.post("/products", upload.array("files", 5), productsController.create);
 
 router.get("/brands", brandController.list);
 router.get("/categories", categoryController.list);
+
+router.post("/promote", adminController.promote);
 
 // router.get("/orders/:id", getOrderById);
 // router.post("/category/create", newCategory);

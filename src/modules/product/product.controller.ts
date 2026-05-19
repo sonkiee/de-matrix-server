@@ -4,6 +4,7 @@ import { ProductsService } from "./product.service";
 import { ProductParams } from "../../types";
 import { uploadImage } from "../../utils/cloudinary";
 import { NewProduct } from "../../db/schema";
+import { isUUID } from "../../utils/is-uuid";
 
 export class ProductsController {
   constructor(private service: ProductsService) {}
@@ -61,6 +62,43 @@ export class ProductsController {
       message: "Products retrieved successfully",
       data: rows,
     });
+  };
+
+  getOne = async (req: Request, res: Response) => {
+    const identifier = Array.isArray(req.params.identifier)
+      ? req.params.identifier[0]
+      : req.params.identifier;
+
+    const isUuidValue = isUUID(identifier);
+
+    try {
+      const product = isUuidValue
+        ? await this.service.getById(identifier)
+        : await this.service.getBySlug(identifier);
+
+      return res.status(200).json({
+        success: true,
+        message: "Product retrieved successfully",
+        data: product,
+      });
+    } catch (e: any) {
+      const code = e?.statusCode ?? 500;
+      return res.status(code).json({ message: e?.message ?? "Server error" });
+    }
+  };
+
+  getBySlug = async (req: Request, res: Response) => {
+    try {
+      const product = await this.service.getBySlug(String(req.params.slug));
+      return res.status(200).json({
+        success: true,
+        message: "Product retrieved successfully",
+        data: product,
+      });
+    } catch (e: any) {
+      const code = e?.statusCode ?? 500;
+      return res.status(code).json({ message: e?.message ?? "Server error" });
+    }
   };
 
   getById = async (req: Request, res: Response) => {

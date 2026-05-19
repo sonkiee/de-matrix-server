@@ -11,6 +11,7 @@ const router = express.Router();
 const productsController = new ProductsController(new ProductsService());
 
 router.get("/", productsController.list);
-router.get("/:id", productsController.getById);
+router.get("/:identifier", productsController.getOne);
+// router.get("/:slug", productsController.getBySlug);
 
 export default router;

@@ -24,19 +24,13 @@ import {
   NewProductVariant,
 } from "../../db/schema";
 import { ListParams, ProductParams } from "../../types";
+import slugify from "../../utils/slugify";
+import { skuify } from "../../utils/skuify";
 
 const isUUID = (v: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     v,
   );
-
-const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
 
 const parseList = (v: any): string[] => {
   if (!v) return [];
@@ -103,13 +97,16 @@ export class ProductsService {
 
       const baseSlug = slugify(input.title);
       let slug = baseSlug;
+      let counter = 2;
 
-      for (let i = 0; i < 10; i++) {
+      while (true) {
         const existing = await tx.query.products.findFirst({
           where: eq(products.slug, slug),
         });
+
         if (!existing) break;
-        slug = `${baseSlug}-${Math.floor(Math.random() * 10_000)}`;
+
+        slug = `${baseSlug}-${counter++}`;
       }
 
       const prices = input.variants.map((v) => Number(v.price ?? 0));
@@ -147,10 +144,21 @@ export class ProductsService {
         })),
       );
 
+      const brand = input.brandId
+        ? await tx.query.brands.findFirst({
+            where: eq(brands.id, input.brandId),
+          })
+        : null;
+
       await tx.insert(productVariants).values(
         input.variants.map((v) => ({
           productId: p.id,
-          sku: v.sku ?? null,
+          sku: skuify({
+            brand: input.brandId ? brand?.name : null,
+            title: input.title,
+            storage: v.storage,
+            color: v.color ?? null,
+          }),
           condition: v.condition,
           storage: v.storage ?? null,
           color: v.color ?? null,
@@ -312,6 +320,26 @@ export class ProductsService {
     return query;
   };
 
+  getBySlug = async (slug: string) => {
+    const product = await db.query.products.findFirst({
+      where: eq(products.slug, slug),
+      with: {
+        images: true,
+        variants: true,
+        category: {
+          columns: { id: true, name: true },
+        },
+        brand: {
+          columns: { id: true, name: true },
+        },
+      },
+    });
+
+    if (!product)
+      throw Object.assign(new Error("Product not found"), { statusCode: 404 });
+    return product;
+  };
+
   getById = async (id: string) => {
     if (!isUUID(id))
       throw Object.assign(new Error("Invalid product id"), { statusCode: 400 });
@@ -449,6 +477,8 @@ export class ProductsService {
       return p;
     });
   };
+
+  delete_image = async () => {};
 
   delete = async (id: string) => {
     if (!isUUID(id))
