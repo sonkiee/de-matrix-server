@@ -478,7 +478,43 @@ export class ProductsService {
     });
   };
 
-  delete_image = async () => {};
+  delete_image = async (id: string, imageId: string) => {
+    if (!isUUID(id))
+      throw Object.assign(new Error("Invalid product id"), { statusCode: 400 });
+
+    if (!isUUID(imageId))
+      throw Object.assign(new Error("Invalid image id"), { statusCode: 400 });
+
+    return await db.transaction(async (tx) => {
+      // 1. check how many images exist
+      const images = await tx
+        .select()
+        .from(productImages)
+        .where(eq(productImages.productId, id));
+
+      if (images.length <= 1) {
+        throw Object.assign(new Error("Product must have at least one image"), {
+          statusCode: 400,
+        });
+      }
+
+      // 2. delete target image
+      const deleted = await tx
+        .delete(productImages)
+        .where(
+          and(eq(productImages.productId, id), eq(productImages.id, imageId)),
+        )
+        .returning();
+
+      if (deleted.length === 0) {
+        throw Object.assign(new Error("Image not found"), {
+          statusCode: 404,
+        });
+      }
+
+      return true;
+    });
+  };
 
   delete = async (id: string) => {
     if (!isUUID(id))

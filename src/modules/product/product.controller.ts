@@ -115,6 +115,22 @@ export class ProductsController {
     }
   };
 
+  delete_image = async (req: Request, res: Response) => {
+    try {
+      const id = String(req.params.id);
+      const imageId = String(req.params.imageId);
+
+      await this.service.delete_image(id, imageId);
+      return res.status(200).json({
+        success: true,
+        message: "Image deleted successfully",
+      });
+    } catch (e: any) {
+      const code = e?.statusCode ?? 500;
+      return res.status(code).json({ message: e?.message ?? "Server error" });
+    }
+  };
+
   //   update = async (req: AuthRequest, res: Response) => {
   //     try {
   //       const id = String(req.params.id);

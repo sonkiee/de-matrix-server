@@ -51,6 +51,8 @@ router.get("/categories", categoryController.list);
 
 router.post("/promote", adminController.promote);
 
+router.delete("/products/:id/images/:imageId", productsController.delete_image);
+
 // router.get("/orders/:id", getOrderById);
 // router.post("/category/create", newCategory);
 // router.put("/products/:id", validateObjectId, updateProduct);
